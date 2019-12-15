@@ -20,6 +20,22 @@ class MA {
     @Autowired
     lateinit var ignite: Ignite
 
+    fun getCode(a: JsonObject):Double  {
+        var no: Int = a.get("ma").asInt
+        var mode: String = a.get("mode").asString
+        var code: String = a.get("code").asString
+
+        var cache = ignite.getOrCreateCache<String, Double>("MA$no:$mode")
+        if (cache.size() == 0) {
+            process(a)
+            var newcache = ignite.getOrCreateCache<String, Double>("MA$no:$mode")
+            return  newcache.get(code)
+        }
+        return cache.get(code)
+
+
+
+    }
 
     fun process(a: JsonObject) {
 
