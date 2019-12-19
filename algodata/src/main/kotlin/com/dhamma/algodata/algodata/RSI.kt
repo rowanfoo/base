@@ -66,9 +66,5 @@ class RSI {
         println("--------LOAD ALL  RSI----------")
         var time = obj.get("rsi").asInt
         cacheConcurency.process("RSI$time", obj, ::runload)
-
-
     }
-
-
 }
