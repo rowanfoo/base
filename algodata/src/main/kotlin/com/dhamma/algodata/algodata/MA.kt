@@ -5,6 +5,7 @@ import com.dhamma.base.ignite.IgniteRepo
 import com.dhamma.pesistence.entity.data.CoreData
 import com.google.gson.JsonObject
 import org.apache.ignite.Ignite
+import org.apache.ignite.IgniteCache
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -20,7 +21,21 @@ class MA {
     @Autowired
     lateinit var ignite: Ignite
 
-    fun getCode(a: JsonObject):Double  {
+
+    fun getCache(a: JsonObject): IgniteCache<String, Double> {
+        var no: Int = a.get("ma").asInt
+        var mode: String = a.get("mode").asString
+
+        var cache = ignite.getOrCreateCache<String, Double>("MA$no:$mode")
+        if (cache.size() == 0) {
+            process(a)
+            cache = ignite.getOrCreateCache<String, Double>("MA$no:$mode")
+        }
+        return cache
+    }
+
+
+    fun getCode(a: JsonObject): Double {
         var no: Int = a.get("ma").asInt
         var mode: String = a.get("mode").asString
         var code: String = a.get("code").asString
@@ -29,10 +44,9 @@ class MA {
         if (cache.size() == 0) {
             process(a)
             var newcache = ignite.getOrCreateCache<String, Double>("MA$no:$mode")
-            return  newcache.get(code)
+            return newcache.get(code)
         }
         return cache.get(code)
-
 
 
     }
