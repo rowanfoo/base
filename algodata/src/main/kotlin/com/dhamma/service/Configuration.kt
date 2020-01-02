@@ -1,4 +1,4 @@
-package com.dhamma.algodata
+package com.dhamma.service
 
 import org.springframework.context.annotation.Configuration
 

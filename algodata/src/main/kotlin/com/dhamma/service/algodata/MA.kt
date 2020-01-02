@@ -1,6 +1,6 @@
-package com.dhamma.algodata.algodata
+package com.dhamma.service.algodata
 
-import com.dhamma.algodata.utility.Calc
+import com.dhamma.service.utility.Calc
 import com.dhamma.base.ignite.IgniteRepo
 import com.dhamma.pesistence.entity.data.CoreData
 import com.google.gson.JsonObject

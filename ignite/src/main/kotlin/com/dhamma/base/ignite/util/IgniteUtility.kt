@@ -1,5 +1,9 @@
 package com.dhamma.base.ignite.util
 
+import org.apache.ignite.Ignite
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Component
+
 
 //@Component
 //class IgniteCacheConcurency {
@@ -25,3 +29,16 @@ package com.dhamma.base.ignite.util
 //
 //
 //}
+@Component
+class IgniteUtility {
+    @Autowired
+    lateinit var ignite: Ignite
+
+
+    fun clearalldata() {
+        ignite.cacheNames().forEach {
+            println("-----------------IGNNITE CLEAR CACHE--------$it--")
+            ignite.cache<Any, Any>(it).destroy()
+        }
+    }
+}

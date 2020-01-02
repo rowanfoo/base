@@ -1,11 +1,12 @@
-package com.dhamma.algodata.algodata
+package com.dhamma.service.algodata
 
-import com.dhamma.algodata.utility.Calc
+import com.dhamma.service.utility.Calc
 import com.dhamma.base.ignite.IgniteRepo
 import com.dhamma.base.ignite.concurrency.IgniteCacheConcurency
 import com.dhamma.pesistence.entity.data.CoreData
 import com.google.gson.JsonObject
 import org.apache.ignite.Ignite
+import org.apache.ignite.IgniteCache
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -24,6 +25,16 @@ class RSI {
 
     @Autowired
     lateinit var cacheConcurency: IgniteCacheConcurency
+
+    fun getCache(data: JsonObject): IgniteCache<String, Pair<Double, String>> {
+        var rsidata = data.get("rsi").asInt
+
+        var cache = ignite.getOrCreateCache<String, Pair<Double, String>>("RSI$rsidata")
+        if (cache.size() == 0) {
+            loadall(data)
+        }
+        return cache
+    }
 
 
     fun process(a: JsonObject) {

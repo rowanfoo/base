@@ -1,4 +1,4 @@
-package com.dhamma.algodata.utility
+package com.dhamma.service.utility
 
 import com.dhamma.pesistence.entity.data.CoreData
 
@@ -9,7 +9,7 @@ class Calc {
 //        var all: List<Double> = data.slice(0..no)
 //        return all.reduce { total, next -> total + next } / all.count()
 //    }
-//    fun mocingaverage(ma: Int, series: List<CoreData>): Double {
+//    fun mocingaverage(ma: Int, series: List<CoreDataService>): Double {
 //        var no = ma - 1
 //
 //        println("--------mocingaverage----${series.size}-----")

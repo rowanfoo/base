@@ -1,11 +1,12 @@
-package com.dhamma.algodata.algodata
+package com.dhamma.service.algodata
 
-import com.dhamma.algodata.utility.Calc
+import com.dhamma.service.utility.Calc
 import com.dhamma.base.ignite.IgniteRepo
 import com.dhamma.base.ignite.concurrency.IgniteCacheConcurency
 import com.dhamma.pesistence.entity.data.CoreData
 import com.google.gson.JsonObject
 import org.apache.ignite.Ignite
+import org.apache.ignite.IgniteCache
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -22,6 +23,15 @@ class VolumeMA {
     @Autowired
     lateinit var cacheConcurency: IgniteCacheConcurency
 
+    fun getCache(data: JsonObject): IgniteCache<String, Double> {
+        var volumema = data.get("volumema").asInt
+
+        var cache = ignite.getOrCreateCache<String, Double>("MA$volumema:vol")
+        if (cache.size() == 0) {
+            process(data)
+        }
+        return cache
+    }
 
     fun process(data: JsonObject) {
         var volumema = data.get("volumema").asInt
