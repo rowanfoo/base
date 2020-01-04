@@ -1,10 +1,12 @@
-package com.dhamma.service.utility
+package com.dhamma.ignitedata.utility
 
-import com.dhamma.service.algodata.CoreDataService
 import com.dhamma.base.ignite.IgniteRepo
 import com.dhamma.base.ignite.util.IgniteUtility
+import com.dhamma.ignitedata.service.CoreDataIgniteService
 import com.dhamma.pesistence.entity.data.CoreData
+import com.dhamma.pesistence.entity.data.CoreStock
 import com.dhamma.pesistence.entity.repo.DataRepo
+import com.dhamma.pesistence.entity.repo.StockRepo
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
@@ -23,8 +25,12 @@ class CoreDataScheduler {
     lateinit var ignitecache: IgniteRepo<CoreData>
 
     @Autowired
-    lateinit var coreDataService: CoreDataService
+    lateinit var coreDataService: CoreDataIgniteService
+    @Autowired
+    lateinit var stockrepo: StockRepo
 
+    @Autowired
+    lateinit var ignitecachestock: IgniteRepo<CoreStock>
 
     @Scheduled(cron = "0 19 15 ? * MON-FRI", zone = "GMT-8")
     fun ignitecache() {
@@ -37,7 +43,10 @@ class CoreDataScheduler {
         var data = coreDataService.get2yeardate()
         data.forEach { ignitecache.save("${it.code}:${it.date}", it) }
 
-        println("-----------------LOAD---SIZE-----${ignitecache.size()}--------")
+
+        var list = stockrepo.findAll().forEach {
+            ignitecachestock.save("${it.code}", it)
+        }
 
 
     }

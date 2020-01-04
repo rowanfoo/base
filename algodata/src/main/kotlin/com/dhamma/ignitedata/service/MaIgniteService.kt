@@ -1,7 +1,7 @@
-package com.dhamma.service.algodata
+package com.dhamma.ignitedata.service
 
-import com.dhamma.service.utility.Calc
 import com.dhamma.base.ignite.IgniteRepo
+import com.dhamma.ignitedata.utility.Calc
 import com.dhamma.pesistence.entity.data.CoreData
 import com.google.gson.JsonObject
 import org.apache.ignite.Ignite
@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class MA {
+class MaIgniteService {
 
     @Autowired
     lateinit var ignitecache: IgniteRepo<CoreData>

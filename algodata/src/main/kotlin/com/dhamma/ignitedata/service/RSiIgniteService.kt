@@ -1,6 +1,6 @@
-package com.dhamma.service.algodata
+package com.dhamma.ignitedata.service
 
-import com.dhamma.service.utility.Calc
+import com.dhamma.ignitedata.utility.Calc
 import com.dhamma.base.ignite.IgniteRepo
 import com.dhamma.base.ignite.concurrency.IgniteCacheConcurency
 import com.dhamma.pesistence.entity.data.CoreData
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component
 //import com.dhamma.concurrency
 
 @Component
-class RSI {
+class RSiIgniteService {
     @Autowired
     lateinit var stocklist: List<String>
 

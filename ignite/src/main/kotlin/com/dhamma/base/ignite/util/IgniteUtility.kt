@@ -38,7 +38,7 @@ class IgniteUtility {
     fun clearalldata() {
         ignite.cacheNames().forEach {
             println("-----------------IGNNITE CLEAR CACHE--------$it--")
-            ignite.cache<Any, Any>(it).destroy()
+            ignite.cache<Any, Any>(it).clear()
         }
     }
 }

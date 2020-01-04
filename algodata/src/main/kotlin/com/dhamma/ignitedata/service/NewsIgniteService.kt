@@ -1,4 +1,4 @@
-package com.dhamma.service.algodata
+package com.dhamma.ignitedata.service
 
 import com.dhamma.base.ignite.IgniteRepo
 import com.dhamma.pesistence.entity.data.CoreData
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component
 import java.time.LocalDate
 
 @Component
-class NewsService {
+class NewsIgniteService {
 
     @Autowired
     lateinit var ignitecache: IgniteRepo<CoreData>
@@ -53,7 +53,7 @@ class NewsService {
             //  println("--------NEWS------------------$code----------${newcache.get(code)}")
             //return newcache.get(code)
         }
-        println("--------NEWS CACHE------------------$code----------${cache.get(code)}")
+        //   println("--------NEWS CACHE------------------$code----------${cache.get(code)}")
 //        return cache.get(code)
         // return cache.getAndPutIfAbsent(code, listOf())
 
@@ -97,7 +97,7 @@ class NewsService {
 //            println("--------load--------${tables.size}--")
 
             tables.forEach { (key, data) ->
-                println("-------------------$key----------------${data[0].title}")
+                //  println("-------------------$key----------------${data[0].title}")
                 cache.put(key, data)
             }
         }

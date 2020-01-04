@@ -1,4 +1,4 @@
-package com.dhamma.service.algodata
+package com.dhamma.ignitedata.service
 
 import com.dhamma.base.ignite.IgniteRepo
 import com.dhamma.pesistence.entity.data.CoreData
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component
 import java.time.LocalDate
 
 @Component
-class CoreDataService {
+class CoreDataIgniteService {
 
     @Autowired
     lateinit var dataRepo: DataRepo
@@ -22,7 +22,7 @@ class CoreDataService {
     fun dategt(code: String, date: String): List<CoreData> = ignitecache.values(" where code=?  and  date > ?  ", arrayOf(code, date))
 
 
-    fun today(code: String): CoreData   = ignitecache.values(" where code=?  order by date desc  LIMIT ? ", arrayOf(code, "1")).first()
+    fun today(code: String): CoreData = ignitecache.values(" where code=?  order by date desc  LIMIT ? ", arrayOf(code, "1")).first()
 
     fun changePercentlt(date: String, fallpercent: String): List<CoreData> = ignitecache.values(" where  date=? and changepercent < ?", arrayOf(date, fallpercent))
 }

@@ -1,4 +1,4 @@
-package com.dhamma.service.utility
+package com.dhamma.ignitedata.utility
 
 import com.dhamma.pesistence.entity.data.CoreData
 

@@ -1,7 +1,8 @@
-package com.dhamma.service.configuration
+package com.dhamma.ignitedata.configuration
 
 import com.dhamma.base.ignite.IgniteRepo
 import com.dhamma.pesistence.entity.data.CoreData
+import com.dhamma.pesistence.entity.data.CoreStock
 import com.dhamma.pesistence.entity.data.QCoreData
 import com.dhamma.pesistence.entity.repo.DataRepo
 import com.dhamma.pesistence.entity.repo.StockRepo
@@ -55,5 +56,21 @@ class Config {
 
     }
 
+    @Bean
+    fun ignitecachestock(ignite: Ignite): IgniteRepo<CoreStock> {
+
+        println("-----------------LOAD-----STOCK-------ignitecache-------------")
+
+//        var igniterepo = IgniteRepo<CoreData>(ignite, Class.forName("com.dhamma.pesistence.data.data.CoreData").kotlin)
+        var igniterepo = IgniteRepo<CoreStock>(ignite, CoreStock())
+        var list = stockrepo.findAll().forEach {
+            igniterepo.save("${it.code}", it)
+        }
+
+        println("-----------------LOAD---SIZE-----${igniterepo.size()}--------")
+        return return igniterepo
+
+
+    }
 
 }
