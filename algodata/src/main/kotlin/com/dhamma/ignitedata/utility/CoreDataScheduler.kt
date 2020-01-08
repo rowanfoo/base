@@ -32,7 +32,7 @@ class CoreDataScheduler {
     @Autowired
     lateinit var ignitecachestock: IgniteRepo<CoreStock>
 
-    @Scheduled(cron = "0 19 15 ? * MON-FRI", zone = "GMT-8")
+    @Scheduled(cron = "0 10 15 ? * MON-FRI", zone = "GMT-8")
     fun ignitecache() {
         println("-----------------LOAD---SCHEUDULER-------------")
         println("-----------------PRE ---SIZE-----${ignitecache.size()}--------")
@@ -42,7 +42,8 @@ class CoreDataScheduler {
 
         var data = coreDataService.get2yeardate()
         data.forEach { ignitecache.save("${it.code}:${it.date}", it) }
-
+        var datax = ignitecache.values(" where code=?  order by date desc  LIMIT ? ", arrayOf("BHP.AX", "1")).first()
+        println("------------result-------$datax----")
 
         var list = stockrepo.findAll().forEach {
             ignitecachestock.save("${it.code}", it)
