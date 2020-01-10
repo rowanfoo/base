@@ -19,7 +19,6 @@ class VolumeMaIgniteService {
     lateinit var ignite: Ignite
     @Autowired
     lateinit var ignitecache: IgniteRepo<CoreData>
-
     @Autowired
     lateinit var cacheConcurency: IgniteCacheConcurency
 
@@ -35,34 +34,17 @@ class VolumeMaIgniteService {
 
     fun process(data: JsonObject) {
         var volumema = data.get("volumema").asInt
-
-        //    println("-------VolumeMA------$volumema-----")
-
         var cache = ignite.getOrCreateCache<String, Double>("MA$volumema:vol")
 
         if (cache.size() == 0) {
-
-
             stocklist.forEach {
-                // var series = ignitecache.get("$it")
-                //          println("--------load----CODE-------------$it")
                 var series = ignitecache.values(" where code=?  order by date desc  LIMIT ? ", arrayOf(it, "$volumema"))
-
-                ///        println("--------load----SIZE-------------${series.size}")
-
                 var num = Calc().mocingaverage(volumema, series, "vol")
-
-                ///     println("--------AVG--------$it------------$num")
                 cache.put("$it", num)
 
             }
-
-
         }
-
-
     }
-
 
     fun runload(obj: JsonObject) {
         var volumema = obj.get("volumema").asInt
@@ -78,34 +60,20 @@ class VolumeMaIgniteService {
                 // var series = ignitecache.get("$it")
                 println("--------load----CODE-------------$it")
                 var series = ignitecache.values(" where code=?  order by date desc  LIMIT ? ", arrayOf(it, "$volumema"))
-
-                println("--------load----SIZE-------------${series.size}")
-
                 var num = Calc().mocingaverage(volumema, series, "vol")
-
-                println("--------AVG--------$it------------$num")
                 cache.put("$it", num)
 
             }
 
 
         }
-
-
-        println("--------DONE ALL  VOLUMEA----------")
-
     }
 
     fun loadall(obj: JsonObject) {
-        println("--------LOAD ALL  VOLUMEAVG----------")
         var volumema = obj.get("volumema").asInt
-
-        println("-------VolumeMA------$volumema-----")
-
         cacheConcurency.process("MA$volumema:vol", obj, ::runload)
 
 
     }
-
 
 }
