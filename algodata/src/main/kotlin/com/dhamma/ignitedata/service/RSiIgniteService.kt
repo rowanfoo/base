@@ -1,8 +1,8 @@
 package com.dhamma.ignitedata.service
 
-import com.dhamma.ignitedata.utility.Calc
 import com.dhamma.base.ignite.IgniteRepo
 import com.dhamma.base.ignite.concurrency.IgniteCacheConcurency
+import com.dhamma.ignitedata.utility.Calc
 import com.dhamma.pesistence.entity.data.CoreData
 import com.google.gson.JsonObject
 import org.apache.ignite.Ignite
@@ -42,11 +42,12 @@ class RSiIgniteService {
         //   var to: Int = a.get("to").asInt
         var time: Int = a.get("time").asInt
         var code: String = a.get("code").asString
-        println("--------WILL PROCESS ----------")
+        println("--------WILL PROCESS -------${Thread.currentThread().name}---")
 
 
         var cache = ignite.getOrCreateCache<String, Pair<Double, String>>("RSI$time")
 
+        println("--------WILL PROCESS -xxxxx---------" + cache.size())
         var series = ignitecache.values(" where code=?  order by date desc  LIMIT ? ", arrayOf(code, "$time"))
         println("--------load----SIZE-------------${series.size}")
 
