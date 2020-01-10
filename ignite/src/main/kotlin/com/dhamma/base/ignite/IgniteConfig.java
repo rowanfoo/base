@@ -26,33 +26,10 @@ public class IgniteConfig {
     @Bean(destroyMethod = "close")
     Ignite ignite(IgniteConfiguration cfg) throws IgniteException {
         // Start Ignite node.
-        System.out.println("--------------CREATE IGNITE----------1-----");
         Ignite ig = Ignition.start(cfg);
-        System.out.println("--------------CREATE IGNITE---------2-----");
         return ig;
 
     }
-
-
-//    @Bean
-//    public IgniteRepo makeme(Ignite ignite) {
-//
-//        System.out.println("-----------makeme------------");
-//        IgniteRepo repo = new IgniteRepo(ignite);
-//
-//        BaseTimeSeries serries = new BaseTimeSeries("hello");
-//
-//        serries.addBar(LocalDate.now().atStartOfDay(ZoneId.of("Australia/Sydney")), 1, 2, 3, 4, 10000);
-//        System.out.println("-----------save1------------");
-//
-//        repo.save("BHP.AX", serries);
-//        System.out.println("-----------save2------------");
-//
-//        repo.get("BHP.AX");
-//
-//
-//        return repo;
-//    }
 
 }
 
