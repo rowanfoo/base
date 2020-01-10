@@ -23,54 +23,27 @@ class Config {
 
     @Bean
     fun ignitecache(ignite: Ignite): IgniteRepo<CoreData> {
-        println("-----------------LOAD---ignitecache-------------")
-//        var igniterepo = IgniteRepo<CoreDataService>(ignite, Class.forName("com.dhamma.pesistence.data.data.CoreDataService").kotlin)
         var igniterepo = IgniteRepo<CoreData>(ignite, CoreData())
 
         var mydata = dataRepo.findAll(QCoreData.coreData.date.gt(LocalDate.now().minusYears(2)))
         mydata.forEach { igniterepo.save("${it.code}:${it.date}", it) }
-
-        println("-----------------LOAD---SIZE-----${igniterepo.size()}--------")
-
-
         var querydata = igniterepo.values(" where code=? ", arrayOf("BHP.AX"))
-        println("----------------------data---------------------${querydata.size}-")
-
         return return igniterepo
-
-
     }
 
     @Bean
     fun stocklist(): List<String> {
-        println("------------------------------STOCKLIST--------------")
-//        var d = dataRepo.findOne(QCoreData.coreData.id.eq(1L))
-//        println("------------------------------COREDATA----------$d----")
         var list = stockrepo.findAll()
-
         return list.map { it.code }.toList()
-
-//        return listOf("BHP.AX", "RIO.AX", "NAB.AX", "WBC.AX", "CBA.AX")
-//        return listOf("ABC.AX", "BHP.AX", "WBC.AX")
-        //   return listOf("BHP.AX")
-
     }
 
     @Bean
     fun ignitecachestock(ignite: Ignite): IgniteRepo<CoreStock> {
-
-        println("-----------------LOAD-----STOCK-------ignitecache-------------")
-
-//        var igniterepo = IgniteRepo<CoreData>(ignite, Class.forName("com.dhamma.pesistence.data.data.CoreData").kotlin)
         var igniterepo = IgniteRepo<CoreStock>(ignite, CoreStock())
         var list = stockrepo.findAll().forEach {
             igniterepo.save("${it.code}", it)
         }
-
-        println("-----------------LOAD---SIZE-----${igniterepo.size()}--------")
         return return igniterepo
-
-
     }
 
 }
