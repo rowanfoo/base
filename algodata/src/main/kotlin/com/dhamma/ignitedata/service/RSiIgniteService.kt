@@ -10,8 +10,6 @@ import org.apache.ignite.IgniteCache
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-//import com.dhamma.concurrency
-
 @Component
 class RSiIgniteService {
     @Autowired
@@ -36,42 +34,30 @@ class RSiIgniteService {
         return cache
     }
 
-
     fun process(a: JsonObject) {
         //      var from: Int = a.get("from").asInt
         //   var to: Int = a.get("to").asInt
         var time: Int = a.get("time").asInt
         var code: String = a.get("code").asString
-        println("--------WILL PROCESS -------${Thread.currentThread().name}---")
-
-
         var cache = ignite.getOrCreateCache<String, Pair<Double, String>>("RSI$time")
 
-        println("--------WILL PROCESS -xxxxx---------" + cache.size())
         var series = ignitecache.values(" where code=?  order by date desc  LIMIT ? ", arrayOf(code, "$time"))
-        println("--------load----SIZE-------------${series.size}")
 
         var num = Calc().calculateRsi(series.reversed())
         var max = series.maxBy { it.close }!!.close
         var min = series.minBy { it.close }!!.close
         var percent = String.format("%.1f", (((max - min) / max) * 100))
 
-        println("--------AVG--------$code------------$num")
         cache.put("$code", Pair(String.format("%.1f", num).toDouble(), "$max - $min   $percent"))
-
-
     }
 
     private fun runload(obj: JsonObject) {
-        println("--------RUNLOAD   RSI----------")
         stocklist.parallelStream().forEach {
             var content = JsonObject()
             content.addProperty("code", it)
             content.addProperty("time", obj.get("rsi").asInt)
             process(content)
         }
-        println("--------DONE ALL  RSI----------")
-
     }
 
     fun loadall(obj: JsonObject) {
