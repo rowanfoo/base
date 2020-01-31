@@ -6,6 +6,11 @@ import com.dhamma.pesistence.entity.data.CoreData
 class Calc {
     fun mocingaverage(ma: Int, data: List<CoreData>, mode: String): Double {
         var no = ma - 1
+        if (data.isEmpty()) {
+            print("------mocingaverage-----${data.size}-----------")
+        }
+
+
         var all: List<Double> = data.map {
             when (mode) {
                 "vol" -> it.volume.toDouble()
@@ -32,7 +37,6 @@ class Calc {
 
         var rsitime = closePrices.size - 1
         var relativeStrength = (sumGain / rsitime) / (sumLoss / rsitime)
-        println("-----relativeStrength---${relativeStrength}-------")
         var rsirs = 100 / (1 + relativeStrength)
         var rsi = 100 - rsirs
         return rsi
