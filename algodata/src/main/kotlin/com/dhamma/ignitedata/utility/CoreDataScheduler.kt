@@ -51,8 +51,6 @@ class CoreDataScheduler {
         var list = stockrepo.findAll().forEach {
             ignitecachestock.save("${it.code}", it)
         }
-
-
     }
 
     private fun clearalldata() {
@@ -65,6 +63,4 @@ class CoreDataScheduler {
             }
         }
     }
-
-
 }
