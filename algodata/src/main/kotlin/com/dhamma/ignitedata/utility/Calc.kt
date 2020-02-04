@@ -21,9 +21,9 @@ class Calc {
     }
 
     fun calculateRsi(closePrices: List<CoreData>): Double {
-
         var sumGain = 0.0
         var sumLoss = 0.0
+//ERROR : ClosePrices[i-1] can be null if stock is suspended , close
         for (i in 1 until closePrices.size) {
             var difference = closePrices[i].close - closePrices[i - 1].close
 
