@@ -40,10 +40,9 @@ class RSiIgniteService {
         var time: Int = a.get("time").asInt
         var code: String = a.get("code").asString
         var cache = ignite.getOrCreateCache<String, Pair<Double, String>>("RSI$time")
-
         var series = ignitecache.values(" where code=?  order by date desc  LIMIT ? ", arrayOf(code, "$time"))
-
         var num = Calc().calculateRsi(series.reversed())
+
         var max = series.maxBy { it.close }!!.close
         var min = series.minBy { it.close }!!.close
         var percent = String.format("%.1f", (((max - min) / max) * 100))
@@ -58,6 +57,13 @@ class RSiIgniteService {
             content.addProperty("time", obj.get("rsi").asInt)
             process(content)
         }
+//        stocklist.forEach {
+//            var content = JsonObject()
+//            content.addProperty("code", it)
+//            content.addProperty("time", obj.get("rsi").asInt)
+//            process(content)
+//        }
+
     }
 
     fun loadall(obj: JsonObject) {
