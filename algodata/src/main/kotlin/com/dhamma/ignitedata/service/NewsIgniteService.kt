@@ -5,6 +5,8 @@ import com.dhamma.pesistence.entity.data.CoreData
 import com.dhamma.pesistence.entity.data.News
 import com.dhamma.pesistence.entity.data.QNews
 import com.dhamma.pesistence.entity.repo.NewsRepo
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.gson.JsonObject
 import org.apache.ignite.Ignite
 import org.apache.ignite.IgniteCache
@@ -26,7 +28,9 @@ class NewsIgniteService {
 
     @Autowired
     lateinit var newsRepo: NewsRepo
-
+    @Autowired
+    lateinit var coreDataIgniteService: CoreDataIgniteService
+    object Lock
 
     fun getCache(a: JsonObject): IgniteCache<String, List<News>> {
         var code: String = a.get("code").asString
@@ -39,7 +43,25 @@ class NewsIgniteService {
         }
         return cache
     }
+//    fun newsToday(code: String): JsonNode {
+//        var mapper = ObjectMapper()
+//        var data = coreDataIgniteService.today(code)
+//
+//        var a = JsonObject()
+//        a.addProperty("code", code)
+//        a.addProperty("date", data.date.toString())
+//        return mapper.convertValue(getCode(a), JsonNode::class.java)
+//    }
 
+    fun newsToday(code: String):  List<News> {
+        var mapper = ObjectMapper()
+        var data = coreDataIgniteService.today(code)
+
+        var a = JsonObject()
+        a.addProperty("code", code)
+        a.addProperty("date", data.date.toString())
+        return getCode(a)
+    }
 
     fun getCode(a: JsonObject): List<News> {
         var code: String = a.get("code").asString
@@ -47,21 +69,21 @@ class NewsIgniteService {
 
 
         var cache = ignite.getOrCreateCache<String, List<News>>("NEWS:$date")
-        if (cache.size() == 0) {
-            process(a)
-            cache = ignite.getOrCreateCache<String, List<News>>("NEWS:$date")
-            //  println("--------NEWS------------------$code----------${newcache.get(code)}")
-            //return newcache.get(code)
+        if (cache.size() > 0) {
+            return cache.get(code) ?: listOf()
         }
-        //   println("--------NEWS CACHE------------------$code----------${cache.get(code)}")
-//        return cache.get(code)
-        // return cache.getAndPutIfAbsent(code, listOf())
 
-        return cache.get(code) ?: listOf()
-    }
+        synchronized(Lock) {/// will later refactor , this will prevent multiple thread excute process.
+            if (cache.size() == 0) {
+                process(a)
+                cache = ignite.getOrCreateCache<String, List<News>>("NEWS:$date")
+                return cache.get(code) ?: listOf()
+            }
+         }
+        return listOf()
+      }
 
     fun process(a: JsonObject) {
-
         var code: String = a.get("code").asString
         var date: String = a.get("date").asString
 
