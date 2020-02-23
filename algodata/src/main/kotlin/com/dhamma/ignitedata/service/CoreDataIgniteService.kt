@@ -25,6 +25,9 @@ class CoreDataIgniteService {
     fun today(): CoreData = ignitecache.values(" where code='BHP.AX'  order by date desc  LIMIT ? ", arrayOf("1")).first()
     fun changePercentlt(date: String, fallpercent: String): List<CoreData> = ignitecache.values(" where  date=? and changepercent < ?", arrayOf(date, fallpercent))
 
+    fun sixMonthdata(code: String): Iterable<CoreData> = ignitecache.values("where code=?  order by date desc  LIMIT ? ", arrayOf(code, "120"))
+    fun threehundred(code: String): Iterable<CoreData> = ignitecache.values("where code=?  order by date desc  LIMIT ? ", arrayOf(code, "300"))
+
 
     fun cleasdata() {
         ignitecache.removeall()
