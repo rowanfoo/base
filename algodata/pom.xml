@@ -16,6 +16,7 @@
         <kotlin.version>1.2.71</kotlin.version>
         <ignite.version>2.7.0</ignite.version>
         <kotlin.version>1.3.61</kotlin.version>
+        <arrow.version>0.10.4</arrow.version>
     </properties>
     <dependencies>
         <dependency>
@@ -53,11 +54,14 @@
             <artifactId>kotlinx-coroutines-core</artifactId>
             <version>1.3.3</version>
         </dependency>
+
         <dependency>
             <groupId>com.dharma</groupId>
             <artifactId>persistence</artifactId>
+            <!--            <version>0.0.1</version>-->
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+
 
         <dependency>
             <groupId>com.dhamma</groupId>
@@ -69,8 +73,21 @@
             <artifactId>h2</artifactId>
             <version>1.4.197</version>
         </dependency>
-
-
+        <dependency>
+            <groupId>io.reactivex.rxjava3</groupId>
+            <artifactId>rxkotlin</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.arrow-kt</groupId>
+            <artifactId>arrow-core</artifactId>
+            <version>${arrow.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.arrow-kt</groupId>
+            <artifactId>arrow-syntax</artifactId>
+            <version>${arrow.version}</version>
+        </dependency>
     </dependencies>
 
 </project>
