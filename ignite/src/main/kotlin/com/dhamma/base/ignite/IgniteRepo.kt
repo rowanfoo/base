@@ -39,13 +39,13 @@ data class IgniteRepo<T>(var ignite: Ignite, var classtype: Any) {
         cache.put(key, value)
     }
 
+    //    @Synchronized
     fun values(sql_query: String, params: Array<String>): List<T> {
         val query: SqlQuery<String, T> = SqlQuery(cache.name, sql_query)
         query.setArgs(*params)
 
         var resultCursor: QueryCursor<Cache.Entry<String, T>> = cache.query(query)
         return resultCursor.map { it.value }.toList()
-
     }
 
 

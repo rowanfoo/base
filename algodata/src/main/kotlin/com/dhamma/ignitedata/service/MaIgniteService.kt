@@ -14,8 +14,10 @@ class MaIgniteService {
 
     @Autowired
     lateinit var ignitecache: IgniteRepo<CoreData>
+
     @Autowired
     lateinit var stocklist: List<String>
+
     @Autowired
     lateinit var ignite: Ignite
 
@@ -37,11 +39,11 @@ class MaIgniteService {
         var no: Int = a.get("ma").asInt
         var mode: String = a.get("mode").asString
         var code: String = a.get("code").asString
-
         var cache = ignite.getOrCreateCache<String, Double>("MA$no:$mode")
         if (cache.size() == 0) {
             process(a)
             var newcache = ignite.getOrCreateCache<String, Double>("MA$no:$mode")
+
             return newcache.get(code)
         }
         return cache.get(code)
@@ -53,16 +55,15 @@ class MaIgniteService {
         var mode: String = a.get("mode").asString
         var cache = ignite.getOrCreateCache<String, Double>("MA$no:$mode")
 
+
         if (cache.size() == 0) {
             stocklist.parallelStream().forEach {
                 var series = ignitecache.values(" where code=?  order by date desc  LIMIT ? ", arrayOf(it, "$no"))
-                var num = Calc().mocingaverage(no, series, mode)
+                var num = Calc().movingaverage(series, mode)
                 cache.put("$it", num)
-
             }
 
         }
-
     }
 }
 
