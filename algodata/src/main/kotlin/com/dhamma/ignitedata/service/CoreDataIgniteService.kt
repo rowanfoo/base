@@ -29,6 +29,9 @@ class CoreDataIgniteService {
     fun threehundred(code: String): Iterable<CoreData> = ignitecache.values("where code=?  order by date desc  LIMIT ? ", arrayOf(code, "300"))
 
 
+    fun records(code: String, no: Int) = ignitecache.values(" where code=?  order by date desc  LIMIT ? ", arrayOf(code, "$no"))
+
+
     fun cleasdata() {
         ignitecache.removeall()
     }

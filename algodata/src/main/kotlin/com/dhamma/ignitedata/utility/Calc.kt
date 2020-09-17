@@ -4,8 +4,23 @@ import com.dhamma.pesistence.entity.data.CoreData
 
 
 class Calc {
-    fun mocingaverage(ma: Int, data: List<CoreData>, mode: String): Double {
-        var no = ma - 1
+//    fun mocingaverage(ma: Int, data: List<CoreData>, mode: String): Double {
+//        var no = ma - 1
+//        if (data.isEmpty()) {
+//            print("------mocingaverage-----${data.size}-----------")
+//        }
+//
+//
+//        var all: List<Double> = data.map {
+//            when (mode) {
+//                "vol" -> it.volume.toDouble()
+//                else -> it.close
+//            }
+//        }
+//        return all.reduce { total, next -> total + next } / ma
+//    }
+
+    fun movingaverage(data: List<CoreData>, mode: String): Double {
         if (data.isEmpty()) {
             print("------mocingaverage-----${data.size}-----------")
         }
@@ -17,8 +32,13 @@ class Calc {
                 else -> it.close
             }
         }
-        return all.reduce { total, next -> total + next } / ma
+//        var total = all.reduce { total, next -> total + next }
+//        var mysize = total / 50
+//        var eg = data.size - 1
+//        var athtt = all.reduce { total, next -> total + next } / (data.size - 1)
+        return all.reduce { total, next -> total + next } / (data.size - 1)
     }
+
 
     fun calculateRsi(closePrices: List<CoreData>): Double {
         var sumGain = 0.0
