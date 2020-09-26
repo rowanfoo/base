@@ -38,7 +38,7 @@ class RSIServiceManager {
     public fun getCache(data: JsonObject): IgniteCache<String, Pair<Double, String>> {
 
 //        var key = "${data.get("rsi")}-${data.get("offset")}"
-        println("------------RSIServiceManager--------------------getCache-------${data}--")
+//        println("------------RSIServiceManager--------------------getCache-------${data}--")
         var key = "${data.get("time")}-${data.get("offset")}"
         var cache = ignite.getOrCreateCache<String, Pair<Double, String>>("RSI$key")
         if (cache.size() == 0) {
@@ -48,8 +48,8 @@ class RSIServiceManager {
     }
 
     public fun runload(obj: JsonObject) {
-        println("------------RSIServiceManager--------------------runload-------$obj--")
-        println("------------RSIServiceManager--------------------runload-------${obj.get("time")}--")
+//        println("------------RSIServiceManager--------------------runload-------$obj--")
+//        println("------------RSIServiceManager--------------------runload-------${obj.get("time")}--")
 
         var cache = ignite.getOrCreateCache<String, Pair<Double, String>>(getKey(obj))
 
@@ -60,7 +60,7 @@ class RSIServiceManager {
                 .map(getDataz)
                 .map(constructorz)
                 .subscribe {
-                    println("Received RESULT $it")
+                  //  println("Received RESULT $it")
 
                     // cache.put(it.get("code").asString, Pair(it.get("rsi").asDouble, it.get("range").asString))
                     cache.put(it.get("code").asString, Pair(it.get("time").asDouble, it.get("range").asString))
@@ -69,7 +69,7 @@ class RSIServiceManager {
 
 
     private fun getData(time: Int, offset: Int, code: String): List<CoreData> {
-        println("Received $code ----------------${Thread.currentThread().name}")
+        //  println("Received $code ----------------${Thread.currentThread().name}")
         var z = ignitecache.values(" where code=?  order by date desc  LIMIT ?  OFFSET ? ", arrayOf(code, "$time", "$offset"))
         return z
     }

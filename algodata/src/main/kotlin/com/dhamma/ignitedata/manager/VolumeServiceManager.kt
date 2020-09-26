@@ -73,7 +73,7 @@ class VolumeServiceManager {
                 }
 
                 .subscribe {
-                    println("Received RESULT $it")
+                    //  println("Received RESULT $it")
 
                     cache.put(it.first, it.second)
                 }
@@ -85,8 +85,8 @@ class VolumeServiceManager {
 
      */
     private fun getData(time: Int, offset: Int, code: String): List<CoreData> {
-        println("Received $code ----------------${Thread.currentThread().name}")
-        println("VolumeServiceManager ----------------$time-------$offset---------")
+        //      println("Received $code ----------------${Thread.currentThread().name}")
+        //    println("VolumeServiceManager ----------------$time-------$offset---------")
 
         var z = ignitecache.values(" where code=?  order by date desc  LIMIT ?  OFFSET ? ", arrayOf(code, "$time", "$offset"))
         return z
