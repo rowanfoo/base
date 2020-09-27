@@ -26,11 +26,13 @@ class CoreDataScheduler {
 
     @Autowired
     lateinit var coreDataService: CoreDataIgniteService
+
     @Autowired
     lateinit var stockrepo: StockRepo
 
     @Autowired
     lateinit var ignitecachestock: IgniteRepo<CoreStock>
+
     @Autowired
     lateinit var ignite: Ignite
 
@@ -53,7 +55,7 @@ class CoreDataScheduler {
         }
     }
 
-    private fun clearalldata() {
+    fun clearalldata() {
         ignite.cacheNames().forEach {
             println("-----------------IGNNITE CLEAR CACHE--------$it--")
             if (!it.equals("CoreData") || !it.equals("CoreStock")) {
