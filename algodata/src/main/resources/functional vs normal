@@ -1,0 +1,148 @@
+
+@Component
+class RSiIgniteService {
+    @Autowired
+    lateinit var stocklist: List<String>
+
+    @Autowired
+    lateinit var ignitecache: IgniteRepo<CoreData>
+
+    @Autowired
+    lateinit var ignite: Ignite
+
+    @Autowired
+    lateinit var cacheConcurency: IgniteCacheConcurency
+
+    fun getCache(data: JsonObject): IgniteCache<String, Pair<Double, String>> {
+        var key = data.get("rsi")+ data.get("rsi")
+        var cache = ignite.getOrCreateCache<String, Pair<Double, String>>("RSI$key")
+        if (cache.size() == 0) {
+            loadall(data)
+        }
+        return cache
+    }
+
+
+     // not functional , all logic is hardcoded and now cannot test RSI formuale
+     // many thing locked in here RSI , ger RANGE , add into CACHE
+    fun process(a: JsonObject) {
+        var time: Int = a.get("time").asInt
+        var code: String = a.get("code").asString
+        var cache = ignite.getOrCreateCache<String, Pair<Double, String>>("RSI$time")
+        var series = ignitecache.values(" where code=?  order by date desc  LIMIT ? ", arrayOf(code, "$time"))
+        var num = Calc().calculateRsi(series.reversed())
+
+        var max = series.maxBy { it.close }!!.close
+        var min = series.minBy { it.close }!!.close
+        var percent = String.format("%.1f", (((max - min) / max) * 100))
+
+        cache.put("$code", Pair(String.format("%.1f", num).toDouble(), "$max - $min   $percent"))
+    }
+
+
+    fun process(series: List<CoreData>): Double {
+        var num = Calc().calculateRsi(series.reversed())
+        return String.format("%.1f", num).toDouble()
+    }
+
+
+    public fun runload(obj: JsonObject) {
+        stocklist.parallelStream().forEach {
+            var content = JsonObject()
+            content.addProperty("code", it)
+            content.addProperty("time", obj.get("rsi").asInt)
+            process(content)
+        }
+
+    }
+
+    fun loadall(obj: JsonObject) {
+        println("--------LOAD ALL  RSI----------")
+        var time = obj.get("rsi").asInt
+        cacheConcurency.process("RSI$time", obj, ::runload)
+    }
+}
+
+
+
+
+//---------------------------------FUNCTIONAL-------------------------------------------------------------------
+@Component
+class RSiIgniteService {
+    @Autowired
+    lateinit var stocklist: List<String>
+
+    @Autowired
+    lateinit var ignitecache: IgniteRepo<CoreData>
+
+    @Autowired
+    lateinit var ignite: Ignite
+
+    @Autowired
+    lateinit var cacheConcurency: IgniteCacheConcurency
+
+    fun getCache(data: JsonObject): IgniteCache<String, Pair<Double, String>> {
+
+        var key = "${data.get("rsi")}-${data.get("offset")}"
+
+        var cache = ignite.getOrCreateCache<String, Pair<Double, String>>("RSI$key")
+        if (cache.size() == 0) {
+            loadall(data)
+        }
+        return cache
+    }
+
+    //functional
+    public fun runload(obj: JsonObject) {
+        var getDataz = ::getData.curried()(obj.get("time").asInt)(obj.get("offset").asInt)
+        var constructorz = ::constructor.curried()(::rsi)(::getRange)
+        stocklist.toObservable()
+
+                .map(getDataz)
+                .map(constructorz)
+                .subscribe {
+                    println("Received $it")
+                    var key = getKey(obj)
+                    var cache = ignite.getOrCreateCache<String, Pair<Double, String>>(key)
+                    cache.put(it.get("code").asString, Pair(it.get("rsi").asDouble, it.get("range").asString))
+                }
+
+
+    }
+//-- functional ---- easy to test RSI formulae , no db embed .... just give me a series of data
+    fun rsi(series: List<CoreData>): Double {
+        var num = Calc().calculateRsi(series.reversed())
+        return String.format("%.1f", num).toDouble()
+    }
+
+    private fun getData(time: Int, offset: Int, code: String)=ignitecache.values(" where code=?  order by date desc  LIMIT ?  OFFSET ? ", arrayOf(code, "$time", "$offset"))
+
+
+
+    fun loadall(obj: JsonObject) {
+        println("--------LOAD ALL  RSI----------")
+        cacheConcurency.process(getKey(obj), obj, ::runload)
+    }
+
+    private fun getRange(series: List<CoreData>): String {
+        var max = series.maxBy { it.close }!!.close
+        var min = series.minBy { it.close }!!.close
+        var percent = String.format("%.1f", (((max - min) / max) * 100))
+        return "$max - $min   $percent"
+    }
+
+
+    private fun getKey(data: JsonObject) = "RSI${data.get("rsi")}-${data.get("offset")}"
+
+    private fun constructor(fna: (List<CoreData>) -> Double, fnb: (List<CoreData>) -> String, series: List<CoreData>): JsonObject {
+        var result = fna(series)
+        var result1 = fnb(series)
+        var content = JsonObject()
+        content.addProperty("code", series[0].code)
+        content.addProperty("rsi", result)
+        content.addProperty("range", result1)
+        return content
+    }
+
+
+}
