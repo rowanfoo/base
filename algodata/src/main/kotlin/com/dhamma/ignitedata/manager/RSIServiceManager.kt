@@ -60,7 +60,7 @@ class RSIServiceManager {
                 .map(getDataz)
                 .map(constructorz)
                 .subscribe {
-                  //  println("Received RESULT $it")
+                    //  println("Received RESULT $it")
 
                     // cache.put(it.get("code").asString, Pair(it.get("rsi").asDouble, it.get("range").asString))
                     cache.put(it.get("code").asString, Pair(it.get("time").asDouble, it.get("range").asString))
@@ -70,6 +70,7 @@ class RSIServiceManager {
 
     private fun getData(time: Int, offset: Int, code: String): List<CoreData> {
         //  println("Received $code ----------------${Thread.currentThread().name}")
+        print("------getData-----${code}-----------")
         var z = ignitecache.values(" where code=?  order by date desc  LIMIT ?  OFFSET ? ", arrayOf(code, "$time", "$offset"))
         return z
     }
