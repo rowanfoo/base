@@ -114,6 +114,7 @@ class RSiIgniteService {
         //       var code: String = a.get("code").asString
 //        var cache = ignite.getOrCreateCache<String, Pair<Double, String>>("RSI$time")
 //        var series = ignitecache.values(" where code=?  order by date desc  LIMIT ? ", arrayOf(code, "$time"))
+
         var num = Calc().calculateRsi(series.reversed())
 
 //        var max = series.maxBy { it.close }!!.close

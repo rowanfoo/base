@@ -70,8 +70,9 @@ class RSIServiceManager {
 
     private fun getData(time: Int, offset: Int, code: String): List<CoreData> {
         //  println("Received $code ----------------${Thread.currentThread().name}")
-        print("------getData-----${code}-----------")
+        println("------getData-----${code}-----------")
         var z = ignitecache.values(" where code=?  order by date desc  LIMIT ?  OFFSET ? ", arrayOf(code, "$time", "$offset"))
+        println("------getData-----${z.size}-----------")
         return z
     }
 
