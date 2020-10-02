@@ -6,6 +6,7 @@ import com.dhamma.base.ignite.concurrency.IgniteCacheConcurency
 import com.dhamma.ignitedata.service.RSiIgniteService
 import com.dhamma.ignitedata.service.ShareService
 import com.dhamma.pesistence.entity.data.CoreData
+import com.dhamma.pesistence.entity.data.HistoryIndicators
 import com.google.gson.JsonObject
 import io.reactivex.rxjava3.kotlin.toObservable
 import org.apache.ignite.Ignite
@@ -35,22 +36,17 @@ class RSIServiceManager {
     lateinit var shareService: ShareService
 
 
-    public fun getCache(data: JsonObject): IgniteCache<String, Pair<Double, String>> {
 
-//        var key = "${data.get("rsi")}-${data.get("offset")}"
-//        println("------------RSIServiceManager--------------------getCache-------${data}--")
-        var key = "${data.get("time")}-${data.get("offset")}"
-        var cache = ignite.getOrCreateCache<String, Pair<Double, String>>("RSI$key")
-        if (cache.size() == 0) {
-            loadall(data)
-        }
-        return cache
+
+
+    public fun add(data: JsonObject){
+
+        loadall(data)
+
     }
 
-    public fun runload(obj: JsonObject) {
-//        println("------------RSIServiceManager--------------------runload-------$obj--")
-//        println("------------RSIServiceManager--------------------runload-------${obj.get("time")}--")
 
+    public fun runload(obj: JsonObject) {
         var cache = ignite.getOrCreateCache<String, Pair<Double, String>>(getKey(obj))
 
         var getDataz = ::getData.curried()(obj.get("time").asInt)(obj.get("offset").asInt)
@@ -61,46 +57,24 @@ class RSIServiceManager {
                 .map(constructorz)
                 .subscribe {
                     //  println("Received RESULT $it")
-
                     // cache.put(it.get("code").asString, Pair(it.get("rsi").asDouble, it.get("range").asString))
                     cache.put(it.get("code").asString, Pair(it.get("time").asDouble, it.get("range").asString))
+                    HistoryIndicators
+                            .builder().code(it.get("code").asString)
+                            .date()
+
                 }
     }
 
 
-    private fun getData(time: Int, offset: Int, code: String): List<CoreData> {
-        //  println("Received $code ----------------${Thread.currentThread().name}")
-        println("------getData-----${code}-----------")
-        var z = ignitecache.values(" where code=?  order by date desc  LIMIT ?  OFFSET ? ", arrayOf(code, "$time", "$offset"))
-        println("------getData-----${z.size}-----------")
-        return z
-    }
-
-
-//    fun runload(obj: JsonObject) {
-//        var volumema = obj.get("volumema").asInt
-//
-//        println("-------VolumeMA------$volumema-----")
-//
-//        var cache = ignite.getOrCreateCache<String, Double>("MA$volumema:vol")
-//
-//        if (cache.size() == 0) {
-//
-//
-//            stocklist.parallelStream().forEach {
-//                // var series = ignitecache.get("$it")
-//                println("--------load----CODE-------------$it")
-//                var series = ignitecache.values(" where code=?  order by date desc  LIMIT ? ", arrayOf(it, "$volumema"))
-//                var num = Calc().mocingaverage(volumema, series, "vol")
-//                cache.put("$it", num)
-//
-//            }
-//
-//
-//        }
+//    private fun getData(time: Int, offset: Int, code: String): List<CoreData> {
+//        //  println("Received $code ----------------${Thread.currentThread().name}")
+//        println("------getData-----${code}-----------")
+//        var z = ignitecache.values(" where code=?  order by date desc  LIMIT ?  OFFSET ? ", arrayOf(code, "$time", "$offset"))
+//        println("------getData-----${z.size}-----------")
+//        return z
 //    }
-
-
+//
     fun loadall(obj: JsonObject) {
         println("--------LOAD ALL  RSI----------")
         println("------------RSIServiceManager---------------------LOAD ALL -------${obj}--")

@@ -18,6 +18,7 @@ class Config {
 //    lateinit var coreDataService: CoreDataService
     @Autowired
     lateinit var dataRepo: DataRepo
+
     @Autowired
     lateinit var stockrepo: StockRepo
 
@@ -33,8 +34,7 @@ class Config {
 
     @Bean
     fun stocklist(): List<String> {
-        var list = stockrepo.findAll()
-        return list.map { it.code }.toList()
+        return stockrepo.findAll().map { it.code }.sortedBy { it }.toList()
     }
 
     @Bean
