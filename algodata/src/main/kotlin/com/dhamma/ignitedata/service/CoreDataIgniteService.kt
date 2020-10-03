@@ -37,4 +37,7 @@ class CoreDataIgniteService {
     }
 
 
+    fun getDatabyLimit(time: Int, code: String): List<CoreData> = ignitecache.values(" where code=?  order by date desc  LIMIT ?  ", arrayOf(code, "$time"))
+
+
 }

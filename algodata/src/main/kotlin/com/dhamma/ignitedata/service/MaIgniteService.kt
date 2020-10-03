@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class MaIgniteService {
+abstract class MaIgniteService {
 
     @Autowired
     lateinit var ignitecache: IgniteRepo<CoreData>
@@ -55,7 +55,6 @@ class MaIgniteService {
         var mode: String = a.get("mode").asString
         var cache = ignite.getOrCreateCache<String, Double>("MA$no:$mode")
 
-
         if (cache.size() == 0) {
             stocklist.parallelStream().forEach {
                 var series = ignitecache.values(" where code=?  order by date desc  LIMIT ? ", arrayOf(it, "$no"))
@@ -65,5 +64,11 @@ class MaIgniteService {
 
         }
     }
+
+
+
+
+
+
 }
 

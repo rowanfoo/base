@@ -1,12 +1,17 @@
 package com.dhamma.ignitedata.manager
 
+import com.dhamma.ignitedata.utility.Calc
 import com.dhamma.pesistence.entity.data.CoreData
 
- fun getData(time: Int, offset: Int, code: String): List<CoreData> {
-    //  println("Received $code ----------------${Thread.currentThread().name}")
-    println("------getData-----${code}-----------")
-    var z = ignitecache.values(" where code=?  order by date desc  LIMIT ?  OFFSET ? ", arrayOf(code, "$time", "$offset"))
-    println("------getData-----${z.size}-----------")
-    return z
+
+fun rsi(series: List<CoreData>): Double {
+    var num = Calc().calculateRsi(series.reversed())
+    return String.format("%.1f", num).toDouble()
 }
 
+fun getRange(series: List<CoreData>): String {
+    var max = series.maxBy { it.close }!!.close
+    var min = series.minBy { it.close }!!.close
+    var percent = String.format("%.1f", (((max - min) / max) * 100))
+    return "$max - $min   $percent"
+}
