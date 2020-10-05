@@ -34,7 +34,6 @@ class NewsIgniteService {
     object Lock
 
     fun getCache(a: JsonObject): IgniteCache<String, List<News>> {
-        var code: String = a.get("code").asString
         var date: String = a.get("date").asString
 
         var cache = ignite.getOrCreateCache<String, List<News>>("NEWS:$date")
