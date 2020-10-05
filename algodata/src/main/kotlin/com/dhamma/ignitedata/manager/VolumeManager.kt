@@ -31,13 +31,13 @@ class VolumeManager : BaseManager() {
 //        var stocklistx = listOf<String>("WPL.AX")
 //        var stocklistx = listOf<String>("STO.AX")
         var time = obj.get("time").asInt
-
+        var typeid = obj.get("id").asLong
         var getDataz = ::getData.curried()(time + 1)
         var getResult = volumeService::getResult.curried()(obj)
 
         //stocklist
 
-       return  stocklist.parallelStream()
+        return stocklist.parallelStream()
                 //  .observeOn(Schedulers.computation())
                 .map(getDataz)
                 .map(getResult)
@@ -51,7 +51,7 @@ class VolumeManager : BaseManager() {
                             .date(today())
                             .type(IndicatorType.VOLUME)
                             .value(value.get("percentage").asDouble)
-                            .type_value(obj.toString())
+                            .type_id(typeid)
                             .message("${value["state"].asString}  --today  ${value["today"].asString}-------vs ma $ ${value["mavol"].asString}----:$ ${value["percentage"].asString}%)").build()
                     println("----------runload---------${x}----")
                     x
