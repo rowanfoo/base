@@ -1,7 +1,5 @@
 package com.dhamma.ignitedata.service
 
-import com.dhamma.ignitedata.utility.Calc
-import com.dhamma.pesistence.entity.data.CoreData
 import org.springframework.stereotype.Component
 
 @Component
@@ -66,13 +64,13 @@ class VolumeMaIgniteService {
 //        }
 //    }
 //
-
-    fun movingavergae(series: List<CoreData>): Double {
-        var num = Calc().movingaverage(series, "vol")
-        return String.format("%.1f", num).toDouble()
-    }
-
-
+//
+//    fun movingavergae(series: List<CoreData>): Double {
+//        var num = Calc().movingaverage(series, "vol")
+//        return String.format("%.1f", num).toDouble()
+//    }
+//
+//
 //    fun loadall(obj: JsonObject) {
 //        var volumema = obj.get("volumema").asInt
 //        cacheConcurency.process("MA$volumema:vol", obj, ::runload)
