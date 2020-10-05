@@ -1,29 +1,26 @@
 package com.dhamma.ignitedata.manager
 
-import arrow.syntax.function.curried
-import com.dhamma.base.ignite.IgniteRepo
 import com.dhamma.base.ignite.concurrency.IgniteCacheConcurency
 import com.dhamma.ignitedata.service.CoreDataIgniteService
 import com.dhamma.pesistence.entity.data.CoreData
 import com.dhamma.pesistence.entity.data.HistoryIndicators
-import com.dhamma.pesistence.entity.data.IndicatorType
 import com.dhamma.pesistence.entity.repo.HistoryIndicatorsRepo
 import com.google.gson.JsonObject
 import org.springframework.beans.factory.annotation.Autowired
-import java.time.LocalDate
-import kotlin.streams.toList
+import javax.transaction.Transactional
 
-
-open abstract class BaseManager {
+@Transactional
+open abstract class BaseManager : IManager {
     @Autowired
     lateinit var coreDataIgniteService: CoreDataIgniteService
+
     @Autowired
     lateinit var historyIndicatorsRepo: HistoryIndicatorsRepo
 
     @Autowired
     lateinit var cacheConcurency: IgniteCacheConcurency
 
-    
+
     fun getData(time: Int, code: String): List<CoreData> {
         //  println("Received $code ----------------${Thread.currentThread().name}")
 //        println("------getData-----${code}-----------")
@@ -43,14 +40,25 @@ open abstract class BaseManager {
     }
 
 
-    abstract fun runload(obj: JsonObject)
+    fun today(code: String) = coreDataIgniteService.today(code)
 
 
-    fun loadall(obj: JsonObject) {
-        println("--------LOAD ALL  RSI----------")
-        println("------------RSIServiceManager---------------------LOAD ALL -------${obj}--")
+    abstract fun runload(obj: JsonObject): List<HistoryIndicators>
+
+    override fun loadall(obj: JsonObject) {
+//        println("--------LOAD ALL  RSI----------")
+        //      println("------------RSIServiceManager---------------------LOAD ALL -------${obj}--")
 //        cacheConcurency.process(getKey(obj), obj, ::runload)
-        cacheConcurency.process("algoimport_run", obj, ::runload)
+
+//        var value = if (obj.get("time") != null) obj.get("time").asString else obj.get("price").asString
+//        value = value + "-" + obj.get("type").asString
+//        cacheConcurency.process("algoimport_run $value", obj, ::runload)
+
+
+        var list = runload(obj)
+        addData(list)
+
+
     }
 
 

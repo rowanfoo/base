@@ -20,7 +20,7 @@ class Calc {
 //        return all.reduce { total, next -> total + next } / ma
 //    }
 
-    fun movingaverage(data: List<CoreData>, mode: String): Double {
+    fun movingaverage(mode: String, data: List<CoreData>): Double {
         if (data.isEmpty()) {
             println("------mocingaverage-----${data.size}-----------")
         }
@@ -45,7 +45,7 @@ class Calc {
         var sumLoss = 0.0
 //ERROR : ClosePrices[i-1] can be null if stock is suspended , close , sometime can be null
         for (i in 1 until closePrices.size) {
-            println("------calculateRsi-----${closePrices[i].close}-----------")
+            // println("------calculateRsi-----${closePrices[i].close}-----------")
 
             var difference = closePrices[i].close - closePrices[i - 1].close
 

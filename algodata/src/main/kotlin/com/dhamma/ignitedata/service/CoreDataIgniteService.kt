@@ -24,6 +24,8 @@ class CoreDataIgniteService {
     fun today(code: String): CoreData = ignitecache.values(" where code=?  order by date desc  LIMIT ? ", arrayOf(code, "1")).first()
     fun today(): CoreData = ignitecache.values(" where code='BHP.AX'  order by date desc  LIMIT ? ", arrayOf("1")).first()
     fun changePercentlt(date: String, fallpercent: String): List<CoreData> = ignitecache.values(" where  date=? and changepercent < ?", arrayOf(date, fallpercent))
+    fun lesserPercentlt(date: String, fallpercent: String): List<CoreData> = ignitecache.values(" where  date=? and changepercent < ?", arrayOf(date, fallpercent))
+
 
     fun sixMonthdata(code: String): Iterable<CoreData> = ignitecache.values("where code=?  order by date desc  LIMIT ? ", arrayOf(code, "120"))
     fun threehundred(code: String): Iterable<CoreData> = ignitecache.values("where code=?  order by date desc  LIMIT ? ", arrayOf(code, "300"))
@@ -39,5 +41,13 @@ class CoreDataIgniteService {
 
     fun getDatabyLimit(time: Int, code: String): List<CoreData> = ignitecache.values(" where code=?  order by date desc  LIMIT ?  ", arrayOf(code, "$time"))
 
+
+    fun reload() {
+        ignitecache.removeall()
+        var mydata = dataRepo.findAll(QCoreData.coreData.date.gt(LocalDate.now().minusYears(2)))
+        mydata.forEach { ignitecache.save("${it.code}:${it.date}", it) }
+
+
+    }
 
 }
