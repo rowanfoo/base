@@ -70,6 +70,7 @@ class ImportManager {
             var (arg1, operator, arg2) = threeElems(maconfigstring.toString())
 
             var content = JsonObject()
+            content.addProperty("id", it.id)
             content.addProperty("type", "ma")
             content.addProperty("mode", "price")
             content.addProperty("operator", operator)
@@ -86,6 +87,7 @@ class ImportManager {
         var (arg1, operator, arg2) = threeElems(rsistring!!)
 
         var content = JsonObject()
+        content.addProperty("id", user("rowan").getUserConfigType(IndicatorType.RSI)[0].id)
         content.addProperty("rsialgo", arg1)
         content.addProperty("type", "rsi")
         content.addProperty("operator", operator)
@@ -97,6 +99,7 @@ class ImportManager {
         var (arg3, operator1, arg4) = threeElems(volumexstring!!)
 
         content = JsonObject()
+        content.addProperty("id", user("rowan").getUserConfigType(IndicatorType.VOLUME)[0].id)
         content.addProperty("operator", operator1)
         content.addProperty("type", "volumex")
         content.addProperty("time", arg4)
@@ -107,6 +110,7 @@ class ImportManager {
 
         var (arg5, arg6) = twoElems(falldailystring!!)
         content = JsonObject()
+        content.addProperty("id", user("rowan").getUserConfigType(IndicatorType.PRICE_FALL)[0].id)
         content.addProperty("type", "price")
         content.addProperty("operator", arg6)
         content.addProperty("price", arg5)

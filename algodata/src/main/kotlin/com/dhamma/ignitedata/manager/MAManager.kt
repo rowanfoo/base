@@ -30,6 +30,8 @@ class MAManager : BaseManager() {
 //        var stocklistx = listOf<String>("STO.AX")
         println("-----********START****runload**********------$obj--------")
         var time = obj.get("time").asString
+        var typeid = obj.get("id").asLong
+
         var getDataz = ::getData.curried()(obj.get("time").asInt + 1)
         var getResult = maService::getResult.curried()(obj)
 
@@ -49,7 +51,7 @@ class MAManager : BaseManager() {
                             .date(today())
                             .type(IndicatorType.MA)
                             .value(value.get("percentage").asDouble)
-                            .type_value(obj.toString())
+                            .type_id(typeid)
                             .message("today  ${value["today"].asString}-------vs ma $ ${value["maprice"].asString}----:$ ${value["percentage"].asString}%)").build()
                     println("----------runload---------${x}----")
                     x
