@@ -1,0 +1,14 @@
+1. Service will be like FUNCTION , less dependencies .
+2. Service will be like FUNCTION , a single responsibility
+
+Service , RSIService will only return RSI
+RSIManager will pass into data for RSI and also add things to it or add it to Ignite or Database
+
+Service class have no dependencies , like no db ,etc and also have business logic in there
+
+THis is in future RSIService dont need to care whether data is from IGNITE or from DATABASE
+you can have one that use database and another that use IGNITE both can get RSI
+
+Manager :
+1. Get all data ready for service class ( remove db / ignite dependencies )
+2. LOGIC

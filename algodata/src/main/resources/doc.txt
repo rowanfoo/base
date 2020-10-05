@@ -1,0 +1,30 @@
+Functional Programming
+
+RSiIgniteService class
+
+
+    fun process(a: JsonObject) {
+        var time: Int = a.get("time").asInt
+        var code: String = a.get("code").asString
+        var cache = ignite.getOrCreateCache<String, Pair<Double, String>>("RSI$time")
+        ######var series = ignitecache.values(" where code=?  order by date desc  LIMIT ? ", arrayOf(code, "$time"))
+        var num = Calc().calculateRsi(series.reversed())
+
+        var max = series.maxBy { it.close }!!.close
+        var min = series.minBy { it.close }!!.close
+        var percent = String.format("%.1f", (((max - min) / max) * 100))
+
+        ####cache.put("$code", Pair(String.format("%.1f", num).toDouble(), "$max - $min   $percent"))
+    }
+
+
+    This function is not pure ,
+    1. embeded DB
+    2. Input , but output is a cache
+    ===== no other people can use this function as logic bake in.
+
+
+
+
+    Use MANAGER class .....
+1. will prepare
