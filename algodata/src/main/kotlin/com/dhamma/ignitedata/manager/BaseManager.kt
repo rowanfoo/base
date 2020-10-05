@@ -53,7 +53,7 @@ open abstract class BaseManager : IManager {
 //        var value = if (obj.get("time") != null) obj.get("time").asString else obj.get("price").asString
 //        value = value + "-" + obj.get("type").asString
 //        cacheConcurency.process("algoimport_run $value", obj, ::runload)
-
+// for now DONT do any concurrency later can also do using DB , with job tabls
 
         var list = runload(obj)
         addData(list)
