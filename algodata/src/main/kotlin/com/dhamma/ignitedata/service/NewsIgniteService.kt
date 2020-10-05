@@ -75,7 +75,7 @@ class NewsIgniteService {
     }
 
     fun process(a: JsonObject) {
-        var code: String = a.get("code").asString
+        //  var code: String = a.get("code").asString
         var date: String = a.get("date").asString
         var cache = ignite.getOrCreateCache<String, List<News>>("NEWS:$date")
 
