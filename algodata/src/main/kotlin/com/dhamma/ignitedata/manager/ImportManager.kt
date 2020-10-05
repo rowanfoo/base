@@ -1,6 +1,7 @@
 package com.dhamma.ignitedata.manager
 
 import com.dhamma.ignitedata.service.CoreDataIgniteService
+import com.dhamma.ignitedata.service.NewsIgniteService
 import com.dhamma.pesistence.entity.data.Job
 import com.dhamma.pesistence.entity.data.QUser
 import com.dhamma.pesistence.entity.data.User
@@ -39,6 +40,10 @@ class ImportManager {
     lateinit var jobRepo: JobRepo
 
 
+    @Autowired
+    lateinit var newsIgniteService: NewsIgniteService
+
+
     public fun startimport() {
 
         var userconfig = user("rowan").userConfig
@@ -46,6 +51,12 @@ class ImportManager {
         var mutableList = mutableListOf<Deferred<Unit>>()
 
         coreDataIgniteService.reload()
+        var newsconfig = JsonObject()
+        newsconfig.addProperty("date", coreDataIgniteService.today().date.toString())
+
+
+        newsIgniteService.getCache(newsconfig)
+
 
         jobRepo.save(
                 Job.builder().date(coreDataIgniteService.today().date).message("Price import").build()
