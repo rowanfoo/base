@@ -2,6 +2,7 @@ package com.dhamma.ignitedata.manager
 
 import com.dhamma.ignitedata.service.CoreDataIgniteService
 import com.dhamma.ignitedata.service.NewsIgniteService
+import com.dhamma.pesistence.entity.data.IndicatorType
 import com.dhamma.pesistence.entity.data.Job
 import com.dhamma.pesistence.entity.data.QUser
 import com.dhamma.pesistence.entity.data.User
@@ -47,7 +48,9 @@ class ImportManager {
     public fun startimport() {
 
         var userconfig = user("rowan").userConfig
-        var maconfig = userconfig.get("ma")
+//        var maconfig = userconfig.get("ma")
+        var maconfig = user("rowan").getUserConfigType(IndicatorType.MA)
+
         var mutableList = mutableListOf<Deferred<Unit>>()
 
         coreDataIgniteService.reload()
@@ -63,7 +66,7 @@ class ImportManager {
         )
 
         maconfig?.forEach {
-            var maconfigstring = it?.asJsonObject?.get("value")?.asString
+            var maconfigstring = it.algoValue
             var (arg1, operator, arg2) = threeElems(maconfigstring.toString())
 
             var content = JsonObject()
@@ -72,12 +75,14 @@ class ImportManager {
             content.addProperty("operator", operator)
             content.addProperty("time", arg2)
             content.addProperty("percent", arg1)
+
             mutableList.add(addAsync(maManager::loadall, content))
         }
 
-        var rsistring = userconfig.get("rsi")?.get(0)?.asJsonObject?.get("value")?.asString
-        var falldailystring = userconfig.get("falldaily")?.get(0)?.asJsonObject?.get("value")?.asString
-        var volumexstring = userconfig.get("volumex")?.get(0)?.asJsonObject?.get("value")?.asString
+        var rsistring = user("rowan").getUserConfigType(IndicatorType.RSI)[0].algoValue
+        var falldailystring = user("rowan").getUserConfigType(IndicatorType.PRICE_FALL)[0].algoValue
+        var volumexstring = user("rowan").getUserConfigType(IndicatorType.VOLUME)[0].algoValue
+
         var (arg1, operator, arg2) = threeElems(rsistring!!)
 
         var content = JsonObject()
