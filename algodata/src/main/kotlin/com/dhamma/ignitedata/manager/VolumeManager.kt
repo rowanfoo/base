@@ -32,6 +32,7 @@ class VolumeManager : BaseManager() {
 //        var stocklistx = listOf<String>("STO.AX")
         var time = obj.get("time").asInt
         var typeid = obj.get("id").asLong
+        var userid= obj.get("userid").asString
         var getDataz = ::getData.curried()(time + 1)
         var getResult = volumeService::getResult.curried()(obj)
 
@@ -52,6 +53,7 @@ class VolumeManager : BaseManager() {
                             .type(IndicatorType.VOLUME)
                             .value(value.get("percentage").asDouble)
                             .type_id(typeid)
+                            .userid(userid)
                             .message("${value["state"].asString}  --today  ${value["today"].asString}-------vs ma $ ${value["mavol"].asString}----:$ ${value["percentage"].asString}%)").build()
                     println("----------runload---------${x}----")
                     x

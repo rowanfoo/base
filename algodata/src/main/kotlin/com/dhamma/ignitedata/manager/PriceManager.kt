@@ -26,6 +26,7 @@ class PriceManager : BaseManager() {
         var operator: String = useralgo.get("operator").asString
         var percent = useralgo.get("price").asString
         var typeid = useralgo.get("id").asLong
+        var userid = useralgo.get("userid").asString
 
         var getResultLesser = coreDataIgniteService::lesserPercentlt.curried()(today().toString())
         var getResultGreater = coreDataIgniteService::lesserPercentlt.curried()(today().toString())
@@ -50,6 +51,7 @@ class PriceManager : BaseManager() {
                             .type(if (operator == ">") IndicatorType.PRICE_UP else IndicatorType.PRICE_FALL)
                             .value(it.changepercent)
                             .type_id(typeid)
+                            .userid(userid)
                             .message("$msg  4%   ${"%.3f".format((it.changepercent * 100))} % ").build()
                     println("----------runload---------${x}----")
                     x

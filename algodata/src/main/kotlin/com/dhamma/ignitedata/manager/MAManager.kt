@@ -31,6 +31,7 @@ class MAManager : BaseManager() {
         println("-----********START****runload**********------$obj--------")
         var time = obj.get("time").asString
         var typeid = obj.get("id").asLong
+        var userid = obj.get("userid").asString
 
         var getDataz = ::getData.curried()(obj.get("time").asInt + 1)
         var getResult = maService::getResult.curried()(obj)
@@ -52,6 +53,7 @@ class MAManager : BaseManager() {
                             .type(IndicatorType.MA)
                             .value(value.get("percentage").asDouble)
                             .type_id(typeid)
+                            .userid(userid)
                             .message("today  ${value["today"].asString}-------vs ma $ ${value["maprice"].asString}----:$ ${value["percentage"].asString}%)").build()
                     println("----------runload---------${x}----")
                     x

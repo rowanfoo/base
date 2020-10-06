@@ -27,6 +27,8 @@ class RSIManager : BaseManager() {
     override fun runload(obj: JsonObject): List<HistoryIndicators> {
         var time = obj.get("time").asInt
         var typeid = obj.get("id").asLong
+        var userid = obj.get("userid").asString
+
         var getDataz = ::getData.curried()(time)
         var getResult = rSIService::getResult.curried()(obj)
 
@@ -45,6 +47,7 @@ class RSIManager : BaseManager() {
                             .type(IndicatorType.RSI)
                             .value(value.get("rsi").asDouble)
                             .type_id(typeid)
+                            .userid(userid)
                             .message("RSI of ${value.get("rsi").asDouble} : price range of ${value.get("range").asString}   ")
                             .build()
                     // println("-------RSI---------------$z")
