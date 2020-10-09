@@ -71,4 +71,18 @@ class HistoryIndicatorService {
                 )
         ).toList()
     }
+
+    //    fun datecodes(codes: List<String>, date: LocalDate): List<HistoryIndicators> {
+    fun datecodes(codes: List<String>, date: LocalDate): Map<String, List<HistoryIndicators>> {
+
+        return historyIndicatorsRepo.findAll(
+                QHistoryIndicators.historyIndicators.date.eq(date).and(
+                        QHistoryIndicators.historyIndicators.code.`in`(codes)
+                )
+        ).groupBy { historyIndicators: HistoryIndicators? -> historyIndicators!!.code }
+
+
+    }
+
+
 }
