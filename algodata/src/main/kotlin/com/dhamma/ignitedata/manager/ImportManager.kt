@@ -2,10 +2,7 @@ package com.dhamma.ignitedata.manager
 
 import com.dhamma.ignitedata.service.CoreDataIgniteService
 import com.dhamma.ignitedata.service.NewsIgniteService
-import com.dhamma.pesistence.entity.data.IndicatorType
-import com.dhamma.pesistence.entity.data.Job
-import com.dhamma.pesistence.entity.data.QUser
-import com.dhamma.pesistence.entity.data.User
+import com.dhamma.pesistence.entity.data.*
 import com.dhamma.pesistence.entity.repo.JobRepo
 import com.dhamma.pesistence.entity.repo.UserRepo
 import com.google.gson.JsonObject
@@ -44,8 +41,13 @@ class ImportManager {
     @Autowired
     lateinit var newsIgniteService: NewsIgniteService
 
+    private fun check(): Boolean {
+        return jobRepo.findOne(QJob.job.date.eq(coreDataIgniteService.today().date)).isPresent()
+    }
 
-    public fun startimport() {
+
+    public @Synchronized
+    fun startimport() {
 
         var userconfig = user("rowan").userConfig
 //        var maconfig = userconfig.get("ma")
@@ -54,6 +56,10 @@ class ImportManager {
         var mutableList = mutableListOf<Deferred<Unit>>()
 
         coreDataIgniteService.reload()
+
+        //someone working on this , dont run again .
+        if (check()) return
+
         var newsconfig = JsonObject()
         newsconfig.addProperty("date", coreDataIgniteService.today().date.toString())
 
@@ -61,9 +67,10 @@ class ImportManager {
         newsIgniteService.getCache(newsconfig)
 
 
-        jobRepo.save(
+        jobRepo.saveAndFlush(
                 Job.builder().date(coreDataIgniteService.today().date).message("Price import").build()
         )
+
 
         maconfig?.forEach {
             var maconfigstring = it.algoValue
