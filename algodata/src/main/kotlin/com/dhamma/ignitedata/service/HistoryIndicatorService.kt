@@ -8,6 +8,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import java.time.LocalDate
+import java.util.*
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
 
@@ -30,6 +31,14 @@ class HistoryIndicatorService {
                 .orderBy(QJob.job.date.desc()).limit(1).fetch() as List<Job>)[0].date
     }
 
+    fun dateExsits(date: String): LocalDate {
+        var date = jobrepo.findOne(QJob.job.date.eq(LocalDate.parse(date)))
+        return if (date.isPresent) date.get().date
+        else {
+            return today()
+        }
+    }
+
 
     fun todaytype(type: IndicatorType): List<HistoryIndicators> {
         return historyIndicatorsRepo.findAll(
@@ -39,9 +48,11 @@ class HistoryIndicatorService {
         ).toList()
     }
 
-    fun todaytypeid(typeid: String): List<HistoryIndicators> {
+    fun todaytypeid(typeid: String, date: Optional<String>): List<HistoryIndicators> {
+        var mydate = if (date.isPresent()) LocalDate.parse(date.get()) else today()
+
         return historyIndicatorsRepo.findAll(
-                QHistoryIndicators.historyIndicators.date.eq(today()).and(
+                QHistoryIndicators.historyIndicators.date.eq(mydate).and(
                         QHistoryIndicators.historyIndicators.type_id.eq(typeid.toLong())
                 )
         ).toList()
