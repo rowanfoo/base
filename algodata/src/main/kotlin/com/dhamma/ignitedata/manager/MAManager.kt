@@ -24,6 +24,14 @@ class MAManager : BaseManager() {
 //    }
 
 
+    fun code(code: String, date: String, time: Int, mode: String): JsonObject {
+//add 1 because we want to compare today price  to  a 50d MA (incld yesterday but not today)
+        var data = coreDataIgniteService.datelseqlimit(code, date, (time + 1).toString())
+        var content = JsonObject()
+        content.addProperty("mode", mode)
+        return maService.getMA(content, data)
+    }
+
     override fun runload(obj: JsonObject): List<HistoryIndicators> {
 //add 1 because we want to compare today price  to  a 50d MA (incld yesterday but not today)
 //        var stocklistx = listOf<String>("WPL.AX")
