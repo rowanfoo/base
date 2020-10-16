@@ -12,13 +12,31 @@ class MAService : BaseService() {
 // want to compare today price to yesterday MA
     // so will select today price , then minus it from the index
 
-    fun getResult(useralgo: JsonObject, data: List<CoreData>): Optional<JsonObject> {
 
+    fun getMA(useralgo: JsonObject, data: List<CoreData>): JsonObject {
+        var mode: String = useralgo.get("mode").asString
+        var today = data[0].close
+        var datax = data.subList(1, data.size)
+
+        var content = JsonObject()
+        content.addProperty("code", datax[0].code)
+        content.addProperty("today", today)
+
+        var ma = Calc().movingaverage(mode, datax)
+
+        content.addProperty("maprice", ma)
+        content.addProperty("percentage", percent(today, ma))
+
+        return content
+
+    }
+
+
+    fun getResult(useralgo: JsonObject, data: List<CoreData>): Optional<JsonObject> {
+/*
         // println("------------DATA------${data.size}-----------")
 
         var mode: String = useralgo.get("mode").asString
-        var percent = useralgo.get("percent").asDouble
-        var operator: String = useralgo.get("operator").asString
 
         //   println("------------getResult------$mode---------$percent------$operator--")
 
@@ -44,7 +62,9 @@ class MAService : BaseService() {
 //        content.addProperty("percentage", percent(today, ma))
         //println("------------CONTECT-----$content-----------")
         content.addProperty("percentage", percent(today, ma))
-       // println("------------CONTECT------${content}-----------")
+*/
+
+        // println("------------CONTECT------${content}-----------")
         //     println("------------MA------${content.get("maprice").asDouble}-------vs TODARY  ${today}----")
 
         //   println("------------PERCENTAGE -----${content.get("percentage").asDouble}-----------")
@@ -83,7 +103,9 @@ class MAService : BaseService() {
 //        }
 //        return Optional.empty()
 
-        return compare(useralgo, content)
+//        return compare(useralgo, content)
+        return compare(useralgo, getMA(useralgo, data))
+
     }
 
 }
