@@ -19,7 +19,15 @@ class CoreDataIgniteService {
 
     fun get2yeardate(): Iterable<CoreData> = dataRepo.findAll(QCoreData.coreData.date.gt(LocalDate.now().minusYears(2)))
 
+
+    fun dateeq(code: String, date: String): CoreData = ignitecache.values(" where code=?  and  date=?  ", arrayOf(code, date)).first()
+
     fun dategt(code: String, date: String): List<CoreData> = ignitecache.values(" where code=?  and  date > ?  ", arrayOf(code, date))
+
+    fun datelseq(code: String, date: String): List<CoreData> = ignitecache.values(" where code=?  and  date <= ?  ", arrayOf(code, date))
+
+    fun datelseqlimit(code: String, date: String, limit: String): List<CoreData> = ignitecache.values(" where code=?  and  date <= ? order by date desc  LIMIT ? ", arrayOf(code, date, limit))
+
 
     fun today(code: String): CoreData = ignitecache.values(" where code=?  order by date desc  LIMIT ? ", arrayOf(code, "1")).first()
     fun today(): CoreData = ignitecache.values(" where code='BHP.AX'  order by date desc  LIMIT ? ", arrayOf("1")).first()
