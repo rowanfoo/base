@@ -36,7 +36,9 @@ class Calc {
 //        var mysize = total / 50
 //        var eg = data.size - 1
 //        var athtt = all.reduce { total, next -> total + next } / (data.size - 1)
-        return all.reduce { total, next -> total + next } / (data.size - 1)
+//        return all.reduce { total, next -> total + next } / (data.size - 1)
+        return all.reduce { total, next -> total + next } / (data.size)
+
     }
 
 

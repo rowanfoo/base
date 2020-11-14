@@ -16,13 +16,15 @@ class MAService : BaseService() {
     fun getMA(useralgo: JsonObject, data: List<CoreData>): JsonObject {
         var mode: String = useralgo.get("mode").asString
         var today = data[0].close
-        var datax = data.subList(1, data.size)
+        //  var datax = data.subList(0, data.size)
 
         var content = JsonObject()
-        content.addProperty("code", datax[0].code)
+//        content.addProperty("code", datax[0].code)
+        content.addProperty("code", data[0].code)
+
         content.addProperty("today", today)
 
-        var ma = Calc().movingaverage(mode, datax)
+        var ma = Calc().movingaverage(mode, data)
 
         content.addProperty("maprice", ma)
         content.addProperty("percentage", percent(today, ma))
