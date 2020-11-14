@@ -55,5 +55,41 @@ class RSIManager : BaseManager() {
                 }.toList()
     }
 
+//    // for testing
+//
+//    fun test(obj: JsonObject, code: String): Optional<HistoryIndicators> {
+//        var time = obj.get("time").asInt
+//        var typeid = obj.get("id").asLong
+//        var userid = obj.get("userid").asString
+//
+//        var getDataz = ::getData.curried()(time)
+//        var getResult = rSIService::getResult.curried()(obj)
+//
+//        var ls = getData(time, code)
+//        ls.forEach {
+//            println("-----------------PRICES ----------------${it.date}--=========${it.close}---")
+//
+//        }
+//
+//        var data = rSIService.getResult(obj, ls)
+//        println("-----------------RSI----------------$data-----")
+//        return data
+//                .map {
+////                    var value = it.get()
+//                    var value = it
+//                    //println("-------RSI---------------$value")
+//                    var z = HistoryIndicators
+//                            .builder().code(value.get("code").asString)
+//                            .date(today())
+//                            .type(IndicatorType.RSI)
+//                            .value(value.get("rsi").asDouble)
+//                            .type_id(typeid)
+//                            .userid(userid)
+//                            .message("RSI of ${value.get("rsi").asDouble} : price range of ${value.get("range").asString}   ")
+//                            .build()
+//                    z
+//                }
+//    }
+
 }
 
