@@ -4,6 +4,7 @@ import com.dhamma.base.ignite.IgniteRepo
 import com.dhamma.pesistence.entity.data.CoreData
 import com.dhamma.pesistence.entity.data.QCoreData
 import com.dhamma.pesistence.entity.repo.DataRepo
+import org.apache.ignite.cache.query.FieldsQueryCursor
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import java.time.LocalDate
@@ -15,10 +16,9 @@ class CoreDataIgniteService {
     lateinit var dataRepo: DataRepo
 
     @Autowired
-    lateinit var ignitecache: IgniteRepo<CoreData>
+    public lateinit var ignitecache: IgniteRepo<CoreData>
 
     fun get2yeardate(): Iterable<CoreData> = dataRepo.findAll(QCoreData.coreData.date.gt(LocalDate.now().minusYears(2)))
-
 
     fun dateeq(code: String, date: String): CoreData = ignitecache.values(" where code=?  and  date=?  ", arrayOf(code, date)).first()
 
@@ -46,16 +46,40 @@ class CoreDataIgniteService {
         ignitecache.removeall()
     }
 
+    // from today to last period HIGH
+    fun priceperiodprecent(code: String, mode: String): Double {
+
+        var date: String = if (mode == "week") LocalDate.now().minusWeeks(1).toString()
+        else if (mode == "month") LocalDate.now().minusMonths(1).toString()
+        else LocalDate.now().minusMonths(3).toString()
+
+        var z = ignitecache.fields("select max(CoreData.close) from CoreData where CoreData.code=? and date >= ?", arrayOf<String>(code, date))
+        //       println("----------priceformonthtodayprecent-----------${z}----")
+        //     println("----------today-----------${today(code)}----")
+
+        var today = today(code).close
+        var high = getsinglefield(z).toDouble()
+
+        return (today - high) / high
+    }
+
 
     fun getDatabyLimit(time: Int, code: String): List<CoreData> = ignitecache.values(" where code=?  order by date desc  LIMIT ?  ", arrayOf(code, "$time"))
-
 
     fun reload() {
         ignitecache.removeall()
         var mydata = dataRepo.findAll(QCoreData.coreData.date.gt(LocalDate.now().minusYears(2)))
         mydata.forEach { ignitecache.save("${it.code}:${it.date}", it) }
+    }
 
-
+    private fun getsinglefield(data: FieldsQueryCursor<List<*>>): String {
+        var d = ""
+        data.forEach {
+            it.forEach {
+                d = it.toString()
+            }
+        }
+        return d
     }
 
 }
