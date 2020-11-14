@@ -69,4 +69,20 @@ class MAManager : BaseManager() {
         return list
     }
 
+    // get MS for a list of stocks that i supply in list
+    fun ma(obj: JsonObject, stocks: List<String>): List<JsonObject> {
+        var time = obj.get("time").asString
+
+        var getDataz = ::getData.curried()(obj.get("time").asInt)
+        var getResult = maService::getMA.curried()(obj)
+
+        var list = stocks.parallelStream()
+                //  .observeOn(Schedulers.computation())
+                .map(getDataz)
+                .map(getResult)
+                .toList()
+        return list
+    }
+
+
 }
