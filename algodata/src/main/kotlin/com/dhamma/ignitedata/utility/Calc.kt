@@ -28,6 +28,7 @@ class Calc {
 
         var all: List<Double> = data.map {
             when (mode) {
+                // vol or close can be null , will have to check why !!!
                 "vol" -> it.volume.toDouble()
                 else -> it.close
             }
