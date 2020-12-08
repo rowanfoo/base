@@ -21,9 +21,9 @@ class VolumeService : BaseService() {
         //   println("------------getResult------$mode---------$percent------$operator--")
 
         useralgo.addProperty("percent", useralgo.get("volumex").asDouble)
+// sometime  these vol , close can be null , will investigate why ??
 
         var today = data[0].volume.toDouble()
-
         var todayprice = data[0].close.toDouble()
         var yesterdayprice = data[1].close.toDouble()
         //var price  =      (true)?"BUY":"SELL"
