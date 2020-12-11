@@ -28,3 +28,8 @@ RSiIgniteService class
 
     Use MANAGER class .....
 1. will prepare
+
+
+managers class is the runner
+services class ----- pure function
+this is the onion arch where db and etc all move up to surface leaving func pure
