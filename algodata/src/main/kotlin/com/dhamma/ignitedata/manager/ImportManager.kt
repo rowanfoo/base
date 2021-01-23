@@ -39,6 +39,9 @@ class ImportManager {
     lateinit var coreDataIgniteService: CoreDataIgniteService
 
     @Autowired
+    lateinit var faillDailyPriceManager: FaillDailyPriceManager
+
+    @Autowired
     lateinit var jobRepo: JobRepo
 
 
@@ -54,9 +57,9 @@ class ImportManager {
     fun startimport() {
 
         var userconfig = user("rowan").userConfig
-//        var maconfig = userconfig.get("ma")
         var maconfig = user("rowan").getUserConfigType(IndicatorType.MA)
         var fmaconfig = user("rowan").getUserConfigType(IndicatorType.MAF)
+        var price_conseqconfig = user("rowan").getUserConfigType(IndicatorType.PRICE_CONSEQ)
 
 
         var mutableList = mutableListOf<Deferred<Unit>>()
@@ -76,6 +79,17 @@ class ImportManager {
         jobRepo.saveAndFlush(
                 Job.builder().date(coreDataIgniteService.today().date).message("Price import").build()
         )
+
+        price_conseqconfig?.forEach {
+            var price_conseqconfigstring = it.algoValue
+            var content = fnbasicUserConfigContent(it)
+            var config = price_conseqconfigstring.split(",");
+            content.addProperty("days", config[0])
+            content.addProperty("sensitive", config[1])
+            content.addProperty("percent", config[2])
+            mutableList.add(addAsync(faillDailyPriceManager::loadall, content))
+        }
+
 
         fmaconfig?.forEach {
             var fmaconfigstring = it.algoValue

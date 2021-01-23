@@ -2,6 +2,7 @@ package com.dhamma.ignitedata.manager
 
 import com.dhamma.ignitedata.utility.Calc
 import com.dhamma.pesistence.entity.data.CoreData
+import com.dhamma.pesistence.entity.data.UserConfig
 import com.google.gson.JsonObject
 import java.util.regex.Pattern
 
@@ -50,7 +51,7 @@ public fun twoElems(zz: String): Pair<String, String> {
     return Pair(zz.substring(0, m.start()), zz.substring(m.start(), m.end()))
 }
 
-fun fnmapricefromconfig(id:Long , operator:String, time:String, percent:String):JsonObject{
+fun fnmapricefromconfig(id: Long, operator: String, time: String, percent: String): JsonObject {
 
     var content = JsonObject()
     content.addProperty("id", id)
@@ -64,6 +65,22 @@ fun fnmapricefromconfig(id:Long , operator:String, time:String, percent:String):
 }
 
 
+fun fnnodaydown(data: List<CoreData>): Pair<Int, Double> {
+    var count = 0
+    var totaldown = 0.0
+    data.forEach {
+        if (it.changepercent < 0) {
+            count++
+            totaldown += it.changepercent
+        }
+    }
+    return Pair(count, totaldown)
+}
 
-
-
+fun fnbasicUserConfigContent(config: UserConfig): JsonObject {
+    var content = JsonObject()
+    content.addProperty("id", config.id)
+    content.addProperty("userid", config.userid)
+    content.addProperty("type", config.getType().name)
+    return content
+}
