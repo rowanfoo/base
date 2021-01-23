@@ -25,7 +25,7 @@ class Calc {
             println("------mocingaverage-----${data.size}-----------")
         }
 
-
+        //null -exception here due to empty null data  ie got date but no price
         var all: List<Double> = data.map {
             when (mode) {
                 // vol or close can be null , will have to check why !!!
@@ -33,13 +33,7 @@ class Calc {
                 else -> it.close
             }
         }
-//        var total = all.reduce { total, next -> total + next }
-//        var mysize = total / 50
-//        var eg = data.size - 1
-//        var athtt = all.reduce { total, next -> total + next } / (data.size - 1)
-//        return all.reduce { total, next -> total + next } / (data.size - 1)
         return all.reduce { total, next -> total + next } / (data.size)
-
     }
 
 
