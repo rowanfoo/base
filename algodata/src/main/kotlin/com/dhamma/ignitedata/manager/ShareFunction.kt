@@ -2,6 +2,7 @@ package com.dhamma.ignitedata.manager
 
 import com.dhamma.ignitedata.utility.Calc
 import com.dhamma.pesistence.entity.data.CoreData
+import com.google.gson.JsonObject
 import java.util.regex.Pattern
 
 
@@ -31,6 +32,10 @@ fun threeElems(zz: String): Triple<String, String, String> {
 }
 
 
+fun fndelimeterPair(zz: String): Pair<String, String> {
+    var a = zz.split(";")
+    return Pair(a[0], a[1])
+}
 
 
 public fun twoElems(zz: String): Pair<String, String> {
@@ -44,3 +49,21 @@ public fun twoElems(zz: String): Pair<String, String> {
     println(" Found: " + m.group())
     return Pair(zz.substring(0, m.start()), zz.substring(m.start(), m.end()))
 }
+
+fun fnmapricefromconfig(id:Long , operator:String, time:String, percent:String):JsonObject{
+
+    var content = JsonObject()
+    content.addProperty("id", id)
+    content.addProperty("userid", "rowan")
+    content.addProperty("type", "ma")
+    content.addProperty("mode", "price")
+    content.addProperty("operator", operator)
+    content.addProperty("time", time)
+    content.addProperty("percent", percent)
+    return content
+}
+
+
+
+
+

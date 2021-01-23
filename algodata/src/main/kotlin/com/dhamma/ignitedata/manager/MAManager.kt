@@ -18,12 +18,6 @@ class MAManager : BaseManager() {
     @Autowired
     lateinit var maService: MAService
 
-
-//    public fun add(data: JsonObject) {
-//        loadall(data)
-//    }
-
-
     fun code(code: String, date: String, time: Int, mode: String): JsonObject {
 //add 1 because we want to compare today price  to  a 50d MA (incld yesterday but not today)
         var data = coreDataIgniteService.datelseqlimit(code, date, (time + 1).toString())
@@ -47,6 +41,7 @@ class MAManager : BaseManager() {
         //stocklist
 
         var list = stocklist.parallelStream()
+
                 //  .observeOn(Schedulers.computation())
                 .map(getDataz)
                 .map(getResult)
@@ -63,7 +58,7 @@ class MAManager : BaseManager() {
                             .type_id(typeid)
                             .userid(userid)
                             .message("today  ${value["today"].asString}-------vs ma $ ${value["maprice"].asString}----:$ ${value["percentage"].asString}%)").build()
-                    println("----------runload---------${x}----")
+                    //    println("----------runload---------${x}----")
                     x
                 }.toList()
         return list

@@ -32,6 +32,10 @@ class ImportManager {
     lateinit var priceManager: PriceManager
 
     @Autowired
+    lateinit var runningMAManger: RunningMAManger
+
+
+    @Autowired
     lateinit var coreDataIgniteService: CoreDataIgniteService
 
     @Autowired
@@ -52,6 +56,8 @@ class ImportManager {
         var userconfig = user("rowan").userConfig
 //        var maconfig = userconfig.get("ma")
         var maconfig = user("rowan").getUserConfigType(IndicatorType.MA)
+        var fmaconfig = user("rowan").getUserConfigType(IndicatorType.MAF)
+
 
         var mutableList = mutableListOf<Deferred<Unit>>()
 
@@ -70,6 +76,18 @@ class ImportManager {
         jobRepo.saveAndFlush(
                 Job.builder().date(coreDataIgniteService.today().date).message("Price import").build()
         )
+
+        fmaconfig?.forEach {
+            var fmaconfigstring = it.algoValue
+            var (maconfig, marunning) = fndelimeterPair(fmaconfigstring)
+            var (arg1, operator, arg2) = threeElems(maconfig)
+
+            var content = fnmapricefromconfig(it.id, operator, arg2, arg1)
+            var z = marunning.split(",");
+            content.addProperty("days", z[0])
+            content.addProperty("sensitive", z[1])
+            mutableList.add(addAsync(runningMAManger::loadall, content))
+        }
 
 
         maconfig?.forEach {
