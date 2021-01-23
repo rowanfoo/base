@@ -22,12 +22,6 @@ open abstract class BaseManager : IManager {
 
 
     fun getData(time: Int, code: String): List<CoreData> {
-        //  println("Received $code ----------------${Thread.currentThread().name}")
-//        println("------getData-----${code}-----------")
-//        var z = ignitecache.values(" where code=?  order by date desc  LIMIT ?  ", arrayOf(code, "$time"))
-//        println("------getData-----${z.size}-----------")
-//        return z
-
         return coreDataIgniteService.getDatabyLimit(time, code)
     }
 
@@ -56,6 +50,7 @@ open abstract class BaseManager : IManager {
 // for now DONT do any concurrency later can also do using DB , with job tabls
 
         var list = runload(obj)
+        // println("send to db ---$list")
         addData(list)
 
 
