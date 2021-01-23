@@ -1,0 +1,25 @@
+  override fun runload(obj: JsonObject): List<HistoryIndicators> {
+
+
+        var time = obj.get("time").asString
+        var typeid = obj.get("id").asLong
+        var userid = obj.get("userid").asString
+
+        var getDataz = ::getData.curried()(obj.get("time").asInt + 1)
+        var getResult = maService::getResult.curried()(obj)
+
+        //stocklist
+
+        var list = stocklist.parallelStream()
+                //  .observeOn(Schedulers.computation())
+                .map(getDataz)
+                .map(getResult)
+                .filter { it.isPresent } ### BUSINESS LOGIC
+                .map {
+
+                }
+
+          #### how good in future , we can PASS CUSTOM LOGIC AS FUNCTIONAL INTO HERE
+          ### NOW LOGIC IS JUST > or <
+          ### LOGIC CAN BE > 40 and <60
+
