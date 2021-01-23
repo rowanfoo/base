@@ -1,0 +1,12 @@
+entry point of Manger =      maManager::loadall
+
+
+ALl MaManger extends BaseManager
+BaseManger
+has a method loadall
+has Abstract method runload  ( this is implemented by all Managers)
+
+
+User will loadall method ( post operation ) which will perform Managers run operation first then run clean up operation.
+
+
