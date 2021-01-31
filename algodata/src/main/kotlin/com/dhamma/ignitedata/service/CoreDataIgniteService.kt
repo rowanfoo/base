@@ -41,6 +41,7 @@ class CoreDataIgniteService {
 
     fun records(code: String, no: Int) = ignitecache.values(" where code=?  order by date desc  LIMIT ? ", arrayOf(code, "$no"))
 
+    fun offsetrecords(code: String, no: Int , offset:Int) = ignitecache.values(" where code=?  order by date desc  LIMIT ? offset ? ", arrayOf(code, "$no" , "$offset"))
 
     fun cleasdata() {
         ignitecache.removeall()
