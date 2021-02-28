@@ -28,7 +28,7 @@ class Calc {
         //null -exception here due to empty null data  ie got date but no price or vol is null
         var all: List<Double> = data.map {
             if (it.volume == null || it.close == null) {
-                println("------mocingaverage-----vol----${it.code}--------${it.date}-----vol---${it.volume}----close---${it.close}")
+                println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>mocingaverage-----NULL-VOL or PRICE---${it.code}--------${it.date}-----vol---${it.volume}----close---${it.close}")
             }
 
             when (mode) {
