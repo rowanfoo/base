@@ -6,6 +6,8 @@ import com.dhamma.pesistence.entity.repo.HistoryIndicatorsRepo
 import com.dhamma.pesistence.entity.repo.JobRepo
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Component
 import java.time.LocalDate
 import java.util.*
@@ -28,7 +30,7 @@ class HistoryIndicatorService {
     fun today(): LocalDate {
         val query = JPAQueryFactory(em)
         return (query.from(QJob.job)
-                .orderBy(QJob.job.date.desc()).limit(1).fetch() as List<Job>)[0].date
+            .orderBy(QJob.job.date.desc()).limit(1).fetch() as List<Job>)[0].date
     }
 
     fun dateExsits(date: String): LocalDate {
@@ -42,9 +44,9 @@ class HistoryIndicatorService {
 
     fun todaytype(type: IndicatorType): List<HistoryIndicators> {
         return historyIndicatorsRepo.findAll(
-                QHistoryIndicators.historyIndicators.date.eq(today()).and(
-                        QHistoryIndicators.historyIndicators.type.eq(type)
-                )
+            QHistoryIndicators.historyIndicators.date.eq(today()).and(
+                QHistoryIndicators.historyIndicators.type.eq(type)
+            )
         ).toList()
     }
 
@@ -52,34 +54,46 @@ class HistoryIndicatorService {
         var mydate = if (date.isPresent()) LocalDate.parse(date.get()) else today()
 
         return historyIndicatorsRepo.findAll(
-                QHistoryIndicators.historyIndicators.date.eq(mydate).and(
-                        QHistoryIndicators.historyIndicators.type_id.eq(typeid.toLong())
-                )
+            QHistoryIndicators.historyIndicators.date.eq(mydate).and(
+                QHistoryIndicators.historyIndicators.type_id.eq(typeid.toLong())
+            )
         ).toList()
     }
 
+    fun datebetweentypeid(
+        typeid: String,
+        date1: String,
+        date2: String,
+        page: Pair<Int, Int>
+    ): Page<HistoryIndicators> {
+        return historyIndicatorsRepo.findAll(
+            QHistoryIndicators.historyIndicators.date.between(LocalDate.parse(date1), LocalDate.parse(date2)).and(
+                QHistoryIndicators.historyIndicators.type_id.eq(typeid.toLong())
+            ), PageRequest.of(page.first, page.second)
+        )
+    }
 
     fun datetype(type: IndicatorType, date: LocalDate): List<HistoryIndicators> {
         return historyIndicatorsRepo.findAll(
-                QHistoryIndicators.historyIndicators.date.eq(date).and(
-                        QHistoryIndicators.historyIndicators.type.eq(type)
-                )
+            QHistoryIndicators.historyIndicators.date.eq(date).and(
+                QHistoryIndicators.historyIndicators.type.eq(type)
+            )
         ).toList()
     }
 
     fun datetypeid(typeid: String, date: LocalDate): List<HistoryIndicators> {
         return historyIndicatorsRepo.findAll(
-                QHistoryIndicators.historyIndicators.date.eq(date).and(
-                        QHistoryIndicators.historyIndicators.type_id.eq(typeid.toLong())
-                )
+            QHistoryIndicators.historyIndicators.date.eq(date).and(
+                QHistoryIndicators.historyIndicators.type_id.eq(typeid.toLong())
+            )
         ).toList()
     }
 
     fun todaycode(code: String): List<HistoryIndicators> {
         return historyIndicatorsRepo.findAll(
-                QHistoryIndicators.historyIndicators.date.eq(today()).and(
-                        QHistoryIndicators.historyIndicators.code.eq(code)
-                )
+            QHistoryIndicators.historyIndicators.date.eq(today()).and(
+                QHistoryIndicators.historyIndicators.code.eq(code)
+            )
         ).toList()
     }
 
@@ -87,9 +101,9 @@ class HistoryIndicatorService {
     fun datecodes(codes: List<String>, date: LocalDate): Map<String, List<HistoryIndicators>> {
 
         return historyIndicatorsRepo.findAll(
-                QHistoryIndicators.historyIndicators.date.eq(date).and(
-                        QHistoryIndicators.historyIndicators.code.`in`(codes)
-                )
+            QHistoryIndicators.historyIndicators.date.eq(date).and(
+                QHistoryIndicators.historyIndicators.code.`in`(codes)
+            )
         ).groupBy { historyIndicators: HistoryIndicators? -> historyIndicators!!.code }
 
 
