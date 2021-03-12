@@ -17,16 +17,13 @@ open abstract class BaseService {
 
     fun today() = coreDataIgniteService.today().date
 
-    // abstract fun getResult(obj: JsonObject): List<JsonObject>
-
-
     fun compare(useralgo: JsonObject, content: JsonObject): Optional<JsonObject> {
         var operator: String = useralgo.get("operator").asString
         var percent = useralgo.get("percent").asDouble
 
         when {
             (operator == ">") -> {
-                if (content.get("percentage").asDouble  > percent) {
+                if (content.get("percentage").asDouble > percent) {
                     return Optional.of(content)
                 }
             }
