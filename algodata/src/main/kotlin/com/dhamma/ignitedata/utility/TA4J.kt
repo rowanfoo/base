@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component
 import org.ta4j.core.BaseTimeSeries
 import org.ta4j.core.TimeSeries
 import org.ta4j.core.indicators.ChopIndicator
+import org.ta4j.core.indicators.RSIIndicator
 import org.ta4j.core.indicators.SMAIndicator
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator
 import org.ta4j.core.num.DoubleNum
@@ -47,6 +48,10 @@ class TA4J {
 
     fun sMAIndicator(data: List<CoreData>, ma: Int): SMAIndicator {
         return SMAIndicator(closePrice(data), ma)
+    }
+
+    fun rSIIndicator(data: List<CoreData>): RSIIndicator {
+        return RSIIndicator(closePrice(data), 14)
     }
 
 
