@@ -51,6 +51,10 @@ class ImportManager {
     @Autowired
     lateinit var newsIgniteService: NewsIgniteService
 
+    @Autowired
+    lateinit var chopMAManger: ChopMAManger
+
+
     private fun check(): Boolean {
         return jobRepo.findOne(QJob.job.date.eq(coreDataIgniteService.today().date)).isPresent()
     }
@@ -63,8 +67,8 @@ class ImportManager {
         var maconfig = user("rowan").getUserConfigType(IndicatorType.MA)
         var fmaconfig = user("rowan").getUserConfigType(IndicatorType.MAF)
         var price_conseqconfig = user("rowan").getUserConfigType(IndicatorType.PRICE_CONSEQ)
-
         var price_highconfig = user("rowan").getUserConfigType(IndicatorType.PRICE_HIGH)
+        var chopma = user("rowan").getUserConfigType(IndicatorType.CHOPMA)
 
 
         var mutableList = mutableListOf<Deferred<Unit>>()
@@ -82,14 +86,25 @@ class ImportManager {
 
 
         jobRepo.saveAndFlush(
-                Job.builder().date(coreDataIgniteService.today().date).message("Price import").build()
+            Job.builder().date(coreDataIgniteService.today().date).message("Price import").build()
         )
+
+        chopma?.forEach {
+            var price_conseqconfigstring = it.algoValue
+            var content = fnbasicUserConfigContent(it)
+            var config = price_conseqconfigstring.split(",");
+            content.addProperty("time", config[0])
+            content.addProperty("sensitive", config[1])
+            content.addProperty("percent", config[2])
+            content.addProperty("ma", config[3])
+            mutableList.add(addAsync(chopMAManger::loadall, content))
+
+        }
 
         price_highconfig?.forEach {
             var fmaconfigstring = it.getAlgoValue()
             var content = fnbasicUserConfigContent(it)
             content.addProperty("days", fmaconfigstring)
-
             mutableList.add(addAsync(priceHighManager::loadall, content))
             println("----MA-----$content")
         }
@@ -103,7 +118,6 @@ class ImportManager {
             content.addProperty("percent", config[2])
             mutableList.add(addAsync(faillDailyPriceManager::loadall, content))
         }
-
 
         fmaconfig?.forEach {
             var fmaconfigstring = it.algoValue
@@ -149,10 +163,7 @@ class ImportManager {
         content.addProperty("time", arg2)
         mutableList.add(addAsync(rSIManager::loadall, content))
 
-
-
         var (arg3, operator1, arg4) = threeElems(volumexstring!!)
-
         content = JsonObject()
         content.addProperty("id", user("rowan").getUserConfigType(IndicatorType.VOLUME)[0].id)
         content.addProperty("userid", "rowan")
@@ -161,8 +172,6 @@ class ImportManager {
         content.addProperty("time", arg4)
         content.addProperty("volumex", arg3)
         mutableList.add(addAsync(volumeManager::loadall, content))
-
-
 
         var (arg5, arg6) = twoElems(falldailystring!!)
         content = JsonObject()
@@ -187,6 +196,5 @@ class ImportManager {
     }
 
     private fun user(username: String): User = userRepo.findOne(QUser.user.username.eq(username)).get()
-
 }
 
