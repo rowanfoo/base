@@ -54,6 +54,9 @@ class ImportManager {
     @Autowired
     lateinit var chopMAManger: ChopMAManger
 
+    @Autowired
+    lateinit var chopRSIManager: ChopRSIManager
+
 
     private fun check(): Boolean {
         return jobRepo.findOne(QJob.job.date.eq(coreDataIgniteService.today().date)).isPresent()
@@ -69,6 +72,7 @@ class ImportManager {
         var price_conseqconfig = user("rowan").getUserConfigType(IndicatorType.PRICE_CONSEQ)
         var price_highconfig = user("rowan").getUserConfigType(IndicatorType.PRICE_HIGH)
         var chopma = user("rowan").getUserConfigType(IndicatorType.CHOPMA)
+        var choprsi = user("rowan").getUserConfigType(IndicatorType.CHOPRSI)
 
 
         var mutableList = mutableListOf<Deferred<Unit>>()
@@ -88,6 +92,16 @@ class ImportManager {
         jobRepo.saveAndFlush(
             Job.builder().date(coreDataIgniteService.today().date).message("Price import").build()
         )
+
+        choprsi?.forEach {
+            var price_conseqconfigstring = it.algoValue
+            var content = fnbasicUserConfigContent(it)
+            var config = price_conseqconfigstring.split(",")
+            content.addProperty("sensitive", config[0])
+            content.addProperty("rsi", config[1])
+            mutableList.add(addAsync(chopRSIManager::loadall, content))
+
+        }
 
         chopma?.forEach {
             var price_conseqconfigstring = it.algoValue
