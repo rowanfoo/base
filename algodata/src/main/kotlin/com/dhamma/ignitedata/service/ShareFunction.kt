@@ -2,7 +2,6 @@ package com.dhamma.ignitedata.service
 
 import com.dhamma.ignitedata.utility.Calc
 import com.dhamma.pesistence.entity.data.CoreData
-import java.util.regex.Pattern
 
 
 fun rsi(series: List<CoreData>): Double {
@@ -17,6 +16,9 @@ fun getRange(series: List<CoreData>): String {
     return "$max - $min   $percent"
 }
 
-fun percent(currentprrice: Double, vsprrice: Double) = String.format("%.3f", (currentprrice - vsprrice) / vsprrice).toDouble()
+fun percent(currentprrice: Double, vsprrice: Double) =
+    String.format("%.3f", (currentprrice - vsprrice) / vsprrice).toDouble()
+
+fun percentformat(d: Double) = String.format("%.2f", d)
 
 
