@@ -1,5 +1,6 @@
 package com.dhamma.ignitedata.utility
 
+import com.dhamma.ignitedata.service.percentformat
 import com.dhamma.pesistence.entity.data.CoreData
 import org.springframework.stereotype.Component
 import org.ta4j.core.BaseTimeSeries
@@ -49,6 +50,29 @@ class TA4J {
     fun sMAIndicator(data: List<CoreData>, ma: Int): SMAIndicator {
         return SMAIndicator(closePrice(data), ma)
     }
+
+//    fun sMAIndicatorAbovePercent(code: String, ma_param: Int, counter: Double, sensitive: Double) {
+
+    fun sMAIndicatorAbovePercent(data: List<CoreData>, ma_param: Int, counter: Double, sensitive: Double): String {
+//        var sensitive = 0.03;
+        var ma = SMAIndicator(closePrice(data), ma_param)
+        val closePrice = ClosePriceIndicator(createSeries(data))
+
+        var x = closePrice.timeSeries.endIndex
+        var y = closePrice.timeSeries.endIndex - counter.toInt()
+
+        var count = 0
+        for (i in x downTo y) {
+            var price = closePrice.getValue(i).doubleValue()
+            var maprice = ma.getValue(i).doubleValue()
+            var percent = (price - maprice) / maprice
+            if (percent > sensitive) {
+                count++
+            }
+        }
+        return percentformat(((count.toDouble() / counter) * 100).toDouble())
+    }
+
 
     fun rSIIndicator(data: List<CoreData>): RSIIndicator {
         return RSIIndicator(closePrice(data), 14)
