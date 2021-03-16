@@ -38,19 +38,18 @@ class VolumeService : BaseService() {
         content.addProperty("code", datax[0].code)
         content.addProperty("state", if (data[0].close > data[1].close) "BUY" else "SELL")
 
-        content.addProperty("today", today)
+        content.addProperty("today", data[0].volAsString)
 
         var ma = Calc().movingaverage("vol", datax)
 
         // println("------------MA-----$ma-----------")
 
-        content.addProperty("mavol", ma)
+        content.addProperty("mavol", getMartketcapAsString(ma.toInt()))
 //        content.addProperty("percentage", percent(today, ma))
         //println("------------CONTECT-----$content-----------")
-        content.addProperty("percentage", percent(today, ma))
+        content.addProperty("percentage", percentformat(percent(today, ma)))
         return compare(useralgo, content)
     }
-
 }
 //  < 5%
 //   < -20%
