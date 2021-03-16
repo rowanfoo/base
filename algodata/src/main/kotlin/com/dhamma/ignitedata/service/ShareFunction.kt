@@ -22,3 +22,10 @@ fun percent(currentprrice: Double, vsprrice: Double) =
 fun percentformat(d: Double) = String.format("%.2f", d)
 
 
+fun getMartketcapAsString(marketcap:Int): String? {
+    return if (marketcap > 1000000000) {
+        (marketcap / 1000000000).toString() + "B"
+    } else {
+        (marketcap / 1000000).toString() + "M"
+    }
+}
