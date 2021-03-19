@@ -37,6 +37,9 @@ class CoreDataIgniteService {
     fun datelseqlimit(code: String, date: String, limit: String): List<CoreData> =
         ignitecache.values(" where code=?  and  date <= ? order by date desc  LIMIT ? ", arrayOf(code, date, limit))
 
+    fun datebtw(code: String, date1: String, date2: String): List<CoreData> =
+        ignitecache.values(" where code=?  and  date between ? and ?  ", arrayOf(code, date1, date2))
+
 
     fun today(code: String): CoreData =
         ignitecache.values(" where code=?  order by date desc  LIMIT ? ", arrayOf(code, "1")).first()
