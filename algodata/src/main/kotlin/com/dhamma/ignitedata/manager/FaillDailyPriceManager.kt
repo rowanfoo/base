@@ -29,6 +29,7 @@ class FaillDailyPriceManager : BaseManager() {
         var userid = obj.get("userid").asString
         var days = obj.get("days").asInt
         var sensitive = obj.get("sensitive").asInt
+        // this is the total of loss in the number of days
         var percent = obj.get("percent").asDouble
 
         var list = coreDataIgniteService.lesserPercentlt(today().toString(), "0") // find all down today
