@@ -57,6 +57,9 @@ class ImportManager {
     @Autowired
     lateinit var chopRSIManager: ChopRSIManager
 
+    @Autowired
+    lateinit var mfiManger: MFIManger
+
 
     private fun check(): Boolean {
         return jobRepo.findOne(QJob.job.date.eq(coreDataIgniteService.today().date)).isPresent()
@@ -73,13 +76,14 @@ class ImportManager {
         var price_highconfig = user("rowan").getUserConfigType(IndicatorType.PRICE_HIGH)
         var chopma = user("rowan").getUserConfigType(IndicatorType.CHOPMA)
         var choprsi = user("rowan").getUserConfigType(IndicatorType.CHOPRSI)
+        var mfistring = user("rowan").getUserConfigType(IndicatorType.MFI)[0].algoValue
 
 
         var mutableList = mutableListOf<Deferred<Unit>>()
 
         coreDataIgniteService.reload()
 
-        //someone working on this , dont run again .
+        ////someone working on this , dont run again .
         if (check()) return
 
         var newsconfig = JsonObject()
@@ -166,6 +170,9 @@ class ImportManager {
         var falldailystring = user("rowan").getUserConfigType(IndicatorType.PRICE_FALL)[0].algoValue
         var volumexstring = user("rowan").getUserConfigType(IndicatorType.VOLUME)[0].algoValue
 
+
+
+
         var (arg1, operator, arg2) = threeElems(rsistring!!)
 
         var content = JsonObject()
@@ -176,6 +183,18 @@ class ImportManager {
         content.addProperty("operator", operator)
         content.addProperty("time", arg2)
         mutableList.add(addAsync(rSIManager::loadall, content))
+
+
+        var (arg11, operator10, arg12) = threeElems(mfistring!!)
+        content = JsonObject()
+        content.addProperty("id", user("rowan").getUserConfigType(IndicatorType.MFI)[0].id)
+        content.addProperty("userid", "rowan")
+        content.addProperty("mfi", arg11)
+        content.addProperty("type", "mfi")
+        content.addProperty("time", arg12)
+        mutableList.add(addAsync(mfiManger::loadall, content))
+
+
 
         var (arg3, operator1, arg4) = threeElems(volumexstring!!)
         content = JsonObject()
@@ -195,7 +214,7 @@ class ImportManager {
         content.addProperty("operator", arg6)
         content.addProperty("price", arg5)
         mutableList.add(addAsync(priceManager::loadall, content))
-
+//
         runBlocking {
             mutableList.forEach {
                 it.await()
