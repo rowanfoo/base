@@ -9,6 +9,7 @@ import org.ta4j.core.indicators.ChopIndicator
 import org.ta4j.core.indicators.RSIIndicator
 import org.ta4j.core.indicators.SMAIndicator
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator
+import org.ta4j.core.indicators.helpers.TypicalPriceIndicator
 import org.ta4j.core.num.DoubleNum
 
 @Component
@@ -78,6 +79,9 @@ class TA4J {
         return RSIIndicator(closePrice(data), 14)
     }
 
+    //typical price (sometimes called the pivot point) refers to the arithmetic average of the high, low, and closing prices for a given period
+    //arithmetic average of the high, low, and closing prices for a given period.
+    fun typicalPrice(data: List<CoreData>) = TypicalPriceIndicator(createSeries(data))
 
     private fun createSeries(data: List<CoreData>): TimeSeries {
         var t = data.reversed()
