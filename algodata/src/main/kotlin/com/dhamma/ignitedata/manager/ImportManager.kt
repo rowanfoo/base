@@ -64,7 +64,10 @@ class ImportManager {
     private fun check(): Boolean {
         return jobRepo.findOne(QJob.job.date.eq(coreDataIgniteService.today().date)).isPresent()
     }
-
+/*
+error could be code have been delisted so no more data
+>> SERVICE =  content.addProperty("code", data[0].code) === error as as data is empty data[0] is error
+ */
 
     public @Synchronized
     fun startimport() {
