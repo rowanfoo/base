@@ -21,6 +21,9 @@ class MAManager : BaseManager() {
     fun code(code: String, date: String, time: Int, mode: String): JsonObject {
 //add 1 because we want to compare today price  to  a 50d MA (incld yesterday but not today)
         var data = coreDataIgniteService.datelseqlimit(code, date, (time + 1).toString())
+        if (data.isEmpty()) {
+            println("!!!!!!!!!!!!!!!!!!ERRROR!!!!!!!!!!!!!!!!------No count for MA , maybe this code dont exists ---$code")
+        }
         var content = JsonObject()
         content.addProperty("mode", mode)
         return maService.getMA(content, data)
@@ -42,25 +45,26 @@ class MAManager : BaseManager() {
 
         var list = stocklist.parallelStream()
 
-                //  .observeOn(Schedulers.computation())
-                .map(getDataz)
-                .map(getResult)
-                .filter { it.isPresent }
-                .map {
-                    var value = it.get()
+            //  .observeOn(Schedulers.computation())
+            .map(getDataz)
+            .map(getResult)
+            .filter { it.isPresent }
+            .map {
+                var value = it.get()
 //                    println("----------runload---------${value.get("percentage").asDouble}----")
-                    //        println("----------runload---------${value}----")
-                    var x = HistoryIndicators
-                            .builder().code(value.get("code").asString)
-                            .date(today())
-                            .type(IndicatorType.MA)
-                            .value(value.get("percentage").asDouble)
-                            .type_id(typeid)
-                            .userid(userid)
-                            .message("today  ${value["today"].asString}-------vs ma $ ${value["maprice"].asString}----:$ ${value["percentage"].asString}%)").build()
-                    //    println("----------runload---------${x}----")
-                    x
-                }.toList()
+                //        println("----------runload---------${value}----")
+                var x = HistoryIndicators
+                    .builder().code(value.get("code").asString)
+                    .date(today())
+                    .type(IndicatorType.MA)
+                    .value(value.get("percentage").asDouble)
+                    .type_id(typeid)
+                    .userid(userid)
+                    .message("today  ${value["today"].asString}-------vs ma $ ${value["maprice"].asString}----:$ ${value["percentage"].asString}%)")
+                    .build()
+                //    println("----------runload---------${x}----")
+                x
+            }.toList()
         return list
     }
 
@@ -72,10 +76,10 @@ class MAManager : BaseManager() {
         var getResult = maService::getMA.curried()(obj)
 
         var list = stocks.parallelStream()
-                //  .observeOn(Schedulers.computation())
-                .map(getDataz)
-                .map(getResult)
-                .toList()
+            //  .observeOn(Schedulers.computation())
+            .map(getDataz)
+            .map(getResult)
+            .toList()
         return list
     }
 
