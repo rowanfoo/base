@@ -22,7 +22,9 @@ open abstract class BaseManager : IManager {
 
 
     fun getData(time: Int, code: String): List<CoreData> {
-        return coreDataIgniteService.getDatabyLimit(time, code)
+        var x = coreDataIgniteService.getDatabyLimit(time, code)
+        if (x.isEmpty()) println("****!!!!WARNNG getData  no data *** $code")
+        return x
     }
 
 

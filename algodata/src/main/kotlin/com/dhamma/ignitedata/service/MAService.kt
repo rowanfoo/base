@@ -15,6 +15,8 @@ class MAService : BaseService() {
 
     fun getMA(useralgo: JsonObject, data: List<CoreData>): JsonObject {
         var mode: String = useralgo.get("mode").asString
+        if (data.isEmpty()) println("!!!!----ERROR--------MAService--getMA-${data.size} ")
+
         var today = data[0].close
         //  var datax = data.subList(0, data.size)
 
@@ -106,6 +108,7 @@ class MAService : BaseService() {
 //        return Optional.empty()
 
 //        return compare(useralgo, content)
+        println("-------XXX-----")
         return compare(useralgo, getMA(useralgo, data))
 
     }
